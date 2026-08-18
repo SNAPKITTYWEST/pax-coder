@@ -524,13 +524,159 @@ huggingface-cli upload Snapkitty/pax-coder-7b pax-coder-7b/gguf/ --repo-type mod
 
 ---
 
-## Sovereign Node Key
+## Commercial Access & Sovereign Node Keys
 
-Running PAX-Coder in production requires a Sovereign Node Key.
+### What Is a Sovereign Node Key?
 
-See [`SOVEREIGN_NODE_KEY.md`](SOVEREIGN_NODE_KEY.md) for how to get one.
+A **Sovereign Node Key** is proof you have contributed to the PAX stack. It's not DRM—it's membership. Running PAX-Coder in production requires one.
 
-The key is not DRM. It is proof that you have contributed to the stack you are running.
+### How to Get a Node Key
+
+**Option 1: Contribute to the Stack (Recommended)**
+
+If you're building on PAX-Coder or the sovereign GPU stack:
+
+1. Fork the repository: https://github.com/SNAPKITTYWEST/pax-coder
+2. Build something (kernel, proof, integration, documentation, etc.)
+3. Submit a pull request
+4. On merge, you earn a node key for that contribution
+5. Email [license@collectivekitty.com](mailto:license@collectivekitty.com) with:
+   - Your GitHub username
+   - Merged PR link(s)
+   - Intended use case (research, commercial, personal)
+6. Receive your node key (Ed25519 public key + signing certificate)
+
+**Option 2: Commercial License (Direct)**
+
+If you need production deployment without contributing:
+
+1. Email [license@collectivekitty.com](mailto:license@collectivekitty.com) with:
+   - Your organization name
+   - Intended deployment scope (internal R&D, SaaS, embedded product, etc.)
+   - GPU hardware (RTX 3080, RTX 4090, H100, etc.)
+   - Estimated kernel volume (dozens per month? thousands?)
+2. Receive a commercial node key + license terms
+3. Deploy with your key registered
+
+### What Does a Node Key Unlock?
+
+| Feature | Community | Commercial |
+|---------|-----------|-----------|
+| Use PAX-Coder locally | ✅ Free | ✅ Free |
+| Generate kernels for personal projects | ✅ Free | ✅ Free |
+| Deploy to production (1+ GPU) | ❌ Requires key | ✅ With key |
+| Embed kernels in products | ❌ Requires license | ✅ With license |
+| Commercial support | ❌ No | ✅ Yes |
+| Proof audit + sign-off | ❌ No | ✅ Yes |
+| SaaS/cloud deployment | ❌ Requires license | ✅ With license |
+
+### How to Use Your Node Key
+
+Once you receive a node key, it comes as:
+
+```
+Node Key ID:   snapkitty-node-12345
+Public Key:    ed25519:abc123...xyz
+Certificate:   (PEM format)
+Expiry:        2027-08-18
+```
+
+**Setup (one time):**
+
+```bash
+# Save the certificate
+mkdir -p ~/.pax-keys
+echo "-----BEGIN PUBLIC KEY-----
+abc123...xyz
+-----END PUBLIC KEY-----" > ~/.pax-keys/node-key.pub
+
+# Or set via environment variable
+export PAX_NODE_KEY="snapkitty-node-12345"
+export PAX_NODE_CERT_PATH="/path/to/certificate.pem"
+```
+
+**Verify your key:**
+
+```bash
+python3 -c "
+import os
+from cryptography.hazmat.primitives import serialization
+
+cert_path = os.environ.get('PAX_NODE_CERT_PATH', os.path.expanduser('~/.pax-keys/node-key.pub'))
+with open(cert_path, 'rb') as f:
+    pub_key = serialization.load_pem_public_key(f.read(), backend=None)
+    print(f'✅ Node key loaded: {pub_key.public_bytes_raw().hex()[:16]}...')
+"
+```
+
+**Deploy kernels with your key:**
+
+```python
+from pax_coder import PAXNode
+
+node = PAXNode(
+    node_id="snapkitty-node-12345",
+    cert_path="~/.pax-keys/node-key.pub"
+)
+
+# Generate a kernel
+kernel = node.generate_kernel(
+    prompt="Write a verified GEMM kernel for RTX 3080",
+    category="gemm",
+    constraints=["PO1", "PO3", "PO5", "PO8"]
+)
+
+# Deploy to production
+result = node.deploy(kernel, target_gpu="RTX-3080")
+print(result.status)  # "PRODUCTION_READY" or "BLOCKED"
+```
+
+### Licensing: What You Can and Can't Do
+
+**Without a node key (community use):**
+- ✅ Use PAX-Coder locally
+- ✅ Generate kernels for education, research, hobby projects
+- ✅ Read, modify, distribute proofs (non-commercial)
+- ❌ Deploy to production systems
+- ❌ Embed in commercial products
+- ❌ Use in SaaS platforms
+
+**With a community node key (contributed to stack):**
+- ✅ All above, plus:
+- ✅ Deploy one PAX-generated kernel to production (limited scope)
+- ✅ Use in research papers (cite PAX-Coder)
+- ❌ Embed in 3rd-party products without commercial license
+
+**With a commercial node key:**
+- ✅ All above, plus:
+- ✅ Unlimited production deployments
+- ✅ Embed in commercial products
+- ✅ SaaS platforms (mention PAX-Coder in terms of service)
+- ✅ Proprietary kernel modifications (proof no longer guaranteed)
+- ✅ Phone support + proof audits
+
+### License Selection (Automatic)
+
+When you run PAX-Coder, it checks your node key and automatically applies the right license:
+
+```bash
+python3 -c "
+from pax_coder import verify_license
+
+status = verify_license()
+print(f'License: {status.license_type}')        # 'community' or 'commercial'
+print(f'Node ID: {status.node_id}')             # 'snapkitty-node-12345'
+print(f'Expires: {status.expiry}')              # '2027-08-18'
+print(f'Deployments remaining: {status.quota}') # Unlimited or N
+"
+```
+
+### Questions?
+
+- **How to contribute:** See [CONTRIBUTING.md](CONTRIBUTING.md)
+- **Node key details:** See [SOVEREIGN_NODE_KEY.md](SOVEREIGN_NODE_KEY.md)
+- **Licensing details:** See [LICENSE.tri](LICENSE.tri)
+- **Commercial inquiries:** [license@collectivekitty.com](mailto:license@collectivekitty.com)
 
 ---
 
