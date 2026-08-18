@@ -117,13 +117,30 @@ ollama run Snapkitty/pax-coder "Write a verified 3-stage async GEMM kernel for R
 Ollama handles model download, quantization, and inference. No GPU drivers to configure.
 
 #### Option B: Python / HuggingFace (Flexible — 3 minutes)
+
+**Step 1: Install dependencies**
 ```bash
-pip install transformers torch
+pip install transformers torch bitsandbytes
 ```
+
+**Step 2: Authenticate with HuggingFace** (if not already logged in)
+```bash
+huggingface-cli login
+# Paste your HF token from https://huggingface.co/settings/tokens
+```
+
+**Step 3: Load and run**
 ```python
 from transformers import AutoModelForCausalLM, AutoTokenizer
+import torch
 
-model     = AutoModelForCausalLM.from_pretrained("Snapkitty/pax-coder-7b")
+# Download model weights from HuggingFace hub (first time only: ~14GB)
+# After first download, cached locally in ~/.cache/huggingface/hub/
+model     = AutoModelForCausalLM.from_pretrained(
+    "Snapkitty/pax-coder-7b",
+    torch_dtype=torch.float16,           # Use FP16 to save VRAM
+    device_map="auto"                    # Auto-place layers on available GPUs
+)
 tokenizer = AutoTokenizer.from_pretrained("Snapkitty/pax-coder-7b")
 
 prompt = """### Instruction:
@@ -139,6 +156,85 @@ Arch: sm_86 | Category: gemm | Constraints: [PO1 PO3 PO5 PO8]
 inputs  = tokenizer(prompt, return_tensors="pt").to("cuda")
 outputs = model.generate(**inputs, max_new_tokens=1024, temperature=0.1)
 print(tokenizer.decode(outputs[0]))
+```
+
+**What happens:**
+1. First run: `transformers` downloads ~14GB from https://huggingface.co/Snapkitty/pax-coder-7b
+2. Cached to `~/.cache/huggingface/hub/` — subsequent runs are instant
+3. Model weights loaded into VRAM (requires RTX 3080+ or RTX 4090; ~10GB VRAM)
+4. Prompt tokenized, inference runs on GPU, output decoded
+
+**Memory requirements:**
+| GPU | FP16 (Recommended) | FP32 (Full) |
+|-----|-------------------|------------|
+| RTX 3080 (10GB) | ✅ Just fits | ❌ OOM |
+| RTX 4090 (24GB) | ✅ Plenty | ✅ Fits |
+| CPU only | ❌ Very slow | ❌ Not recommended |
+
+**Quantized version** (uses less VRAM, slightly faster):
+```python
+from transformers import AutoModelForCausalLM, AutoTokenizer, BitsAndBytesConfig
+
+bnb_config = BitsAndBytesConfig(
+    load_in_4bit=True,                    # 4-bit quantization
+    bnb_4bit_compute_dtype=torch.float16,
+    bnb_4bit_use_double_quant=True,
+    bnb_4bit_quant_type="nf4"
+)
+
+model = AutoModelForCausalLM.from_pretrained(
+    "Snapkitty/pax-coder-7b",
+    quantization_config=bnb_config,
+    device_map="auto"
+)
+tokenizer = AutoTokenizer.from_pretrained("Snapkitty/pax-coder-7b")
+# ... rest of code same
+```
+Quantized version uses ~3.5GB VRAM (works on RTX 2080, slower but still good).
+
+**Troubleshooting:**
+
+| Problem | Solution |
+|---------|----------|
+| `No module named transformers` | `pip install transformers` |
+| `OutOfMemoryError` | Use quantized version (4-bit) or smaller GPU |
+| `Model not found on hub` | Run `huggingface-cli login` first |
+| `CUDA out of memory` | Reduce `max_new_tokens` or use 4-bit quantization |
+| `Very slow inference` | Model is running on CPU; check `device_map="auto"` |
+
+**Direct model link:** https://huggingface.co/Snapkitty/pax-coder-7b
+
+**What's on HuggingFace:**
+
+The `Snapkitty/pax-coder-7b` repository contains:
+
+| File | Size | Purpose |
+|------|------|---------|
+| `pytorch_model-00001-of-00002.bin` | 9.6GB | Model weights part 1 |
+| `pytorch_model-00002-of-00002.bin` | 4.6GB | Model weights part 2 |
+| `model.safetensors` | 14.5GB | Alternative format (faster load) |
+| `config.json` | 708B | Model configuration |
+| `tokenizer.json` | 1.2MB | Tokenizer (BPE) |
+| `tokenizer_config.json` | 412B | Tokenizer config |
+| `special_tokens_map.json` | 300B | Special tokens (BOS, EOS, etc.) |
+| `README.md` | 2.5KB | Model card |
+
+Total download: **~14GB** (split across 2 files for resume support).
+
+When you run `AutoModelForCausalLM.from_pretrained("Snapkitty/pax-coder-7b")`:
+1. `transformers` checks `~/.cache/huggingface/hub/` for existing download
+2. If missing, downloads from HuggingFace CDN (takes 2-10 min depending on connection)
+3. Loads weights into GPU VRAM
+4. Tokenizer loads from same cache
+
+**Cache location:**
+- Linux/macOS: `~/.cache/huggingface/hub/`
+- Windows: `C:\Users\<username>\.cache\huggingface\hub\`
+- Custom: Set `HF_HOME` environment variable
+
+To manually download without running code:
+```bash
+huggingface-cli download Snapkitty/pax-coder-7b
 ```
 
 #### Option C: Local Fine-Tuning (DIY — 4-6 hours)
