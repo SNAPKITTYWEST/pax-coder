@@ -47,15 +47,13 @@ There is currently no mainstream tool that generates formally verified GPU kerne
 
 | Tier | Price | Channel | Target Buyer |
 |------|-------|---------|-------------|
-| **Community** | Free | HuggingFace + Ollama | Individual engineers, researchers, students |
-| **Node** | $25 one-time | Direct (collectivekitty.com) | Individual production users |
-| **Forge** | $100 one-time | Direct | Early adopters, contributors |
-| **Sovereign** | $500 one-time | Direct | Power users, institutional contributors |
-| **Enterprise** | $5,000/yr | Direct / outbound | ML infrastructure teams, AI labs |
+| **Individual Node** | $250–$500 one-time | Direct (CONTACT.md) | Individual production users |
+| **Commercial Team** | $12,000–$25,000/yr | Direct / outbound | AI startups, HFT shops, ML labs |
+| **Enterprise** | $50,000–$150,000+/yr | Direct / outbound | Mission-critical, defense, FinTech deployments |
 
-**The free tier is not a loss leader. It is the acquisition channel.**
+**Public repository is the acquisition channel.**
 
-Kernel engineers who install via Ollama and see that the output actually compiles and the Lean 4 proof actually checks — those are the people who become Node buyers and who mention it in team Slack channels. Word of mouth in the GPU kernel community is extremely high-leverage because the community is small and tight.
+Kernel engineers clone the GitHub repo for verification and testing — no authorization required. Those who need to seal outputs and deploy to production contact for provisioning. The PAX-Coder authority reviews and approves/denies based on use case. Word of mouth in the GPU kernel community is extremely high-leverage because the community is small and tight.
 
 ---
 
@@ -78,9 +76,9 @@ Kernel engineers who install via Ollama and see that the output actually compile
 
 ### Phase 2 — Conversion (Month 2-4)
 
-**Node key as the conversion funnel.** Every time someone uses the free tier and wants to seal an output, they hit the node key requirement. The $25 barrier is intentionally low — it is not priced to extract maximum revenue, it is priced to filter for people who intend to use the tool seriously.
+**Commercial provisioning as the conversion funnel.** Engineers who clone the repo for verification and want to deploy to production contact for a Sovereign Node Key. The contact process qualifies the use case, and provisioning requires commercial agreement.
 
-**The WORM ledger as social proof.** When contributors see their node key listed in the ledger, they share it. The cryptographic attribution is a feature for the kind of engineers who care about provenance.
+**The WORM ledger as social proof.** When developers use PAX-Coder in production and see their node key and sealed outputs listed in the cryptographic ledger, they share it. The permanent, tamper-evident attribution is a feature for engineers who care about provenance.
 
 **Enterprise outreach (Month 3+):**
 - Direct email to GPU infrastructure leads at ML-heavy companies
@@ -91,7 +89,7 @@ Kernel engineers who install via Ollama and see that the output actually compile
 
 **The `pax-verify` API** is the enterprise product. It takes a kernel (any kernel, not just PAX-Coder-generated ones) and returns a formal verification against the PAX proof obligations. This is a broader market than just PAX-Coder output — it is a kernel audit tool.
 
-**Pricing anchor:** $5,000/yr is 2-3 days of an ML engineer's time. If PAX-verify catches one race condition that would have taken a week to debug, it has paid for itself.
+**Pricing anchor:** Enterprise verification includes custom Lean 4 proof modeling and formal audits. Annual contract aligns incentives for long-term partnerships with infrastructure teams.
 
 ---
 
@@ -131,16 +129,16 @@ Kernel engineers who install via Ollama and see that the output actually compile
 
 ## Revenue Model at Scale
 
-**Year 1 target:** 50 Node keys ($1,250) + 10 Enterprise ($50,000) = ~$51,250
+**Year 1 target:** 10 Individual keys ($3,500) + 5 Commercial ($85,000) + 2 Enterprise ($200,000) = ~$288,500
 
-This is not a venture-scale number. It is proof of demand before building the API infrastructure for Phase 3.
+Proof of demand from qualified buyers. Focuses on early adopters with serious production use cases.
 
-**Year 2 target:** 500 Node/Forge/Sovereign keys (~$15,000) + 50 Enterprise ($250,000) = ~$265,000
+**Year 2 target:** 50 Individual keys ($17,500) + 15 Commercial ($300,000) + 8 Enterprise ($800,000) = ~$1,117,500
 
-At this point the `pax-verify` API has enough usage data to price correctly and the paper has been cited enough to have academic credibility.
+At this point the `pax-verify` API has enough usage data and the paper has been cited enough to have academic credibility.
 
 **Year 3+:** The kernel verification API becomes a standard tool in ML infrastructure CI/CD.
-Each enterprise deployment is a 3-5 year relationship.
+Each enterprise deployment is a 3-5 year relationship. Enterprise ARR is the primary revenue driver.
 
 ---
 

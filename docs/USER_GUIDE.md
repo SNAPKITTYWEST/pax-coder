@@ -44,15 +44,15 @@ Production-authorized use requires a provisioned Sovereign Node Key. See [SOVERE
 **Short version:**
 1. **Contact:** Submit provisioning request at [CONTACT.md](../CONTACT.md)
 2. **Select tier:**
-   - Community: $0 after approval (research/open-source only)
    - Individual: $250-$500 per node (one-time, one workstation)
    - Commercial: $12,000-$25,000/year (unlimited internal nodes)
    - Enterprise: $50,000+/year (custom deployment)
 3. **Approval:** PAX-Coder reviews (1–3 business days)
-4. **Receive:** Node credential + operator-signed authorization
-5. **Use:** Protected operations now authorized
+4. **Commercial Agreement & Payment:** Required before provisioning
+5. **Receive:** Node credential + operator-signed authorization
+6. **Use:** Protected operations now authorized
 
-**Personal/research use:** Community tier ($0) available after approval.
+**All production use:** Requires contact, approval, and commercial terms. See [PRICING.md](../PRICING.md) and [CONTACT.md](../CONTACT.md).
 
 ---
 
