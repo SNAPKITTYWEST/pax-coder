@@ -68,18 +68,36 @@ Every PAX-Coder output is **cryptographically signed** with a Sovereign Node Key
 - ✅ Authenticity (your Ed25519 public key)
 - ✅ Non-repudiation (proof of signing)
 
-### Quick Start: Generate Your Node Key
+### Request Your Node Key
+
+**Node key generation is a protected operation.** To request a node key:
+
+1. **Pay for generation** — Click the button below to initiate payment
+2. **Provide your details** — Email + intended use case
+3. **Receive your credentials** — Authorization token via secure channel
+4. **Set authorization** — `export PAX_AUTH_TOKEN=<token>`
+5. **Generate locally** — `cd sovereign && ./generate_node_key.sh`
+
+**Payment & Request:**
+
+[![Request Node Key](https://img.shields.io/badge/💳-Request%20Node%20Key-blue?style=for-the-badge)](https://snapkittywest.stripe.com/node-key-request)
+
+_Stripe payment processor. Secure, encrypted. No card details stored locally._
+
+### Quick Start: Generate Your Node Key (After Authorization)
+
+Once you have authorization:
 
 ```bash
 cd sovereign
-./generate_node_key.sh
-./verify_node_key.sh
+./generate_node_key.sh      # Generates keypair locally
+./verify_node_key.sh        # Verify generation was successful
 ```
 
 This creates:
 - `node.json` — Public identity
 - `prior_art.json` — Timestamp record
-- `.node_sk` — Private key (local only, never committed)
+- `.node_sk` — Private key (local only, never committed, never shared)
 
 ### Security Documentation
 
