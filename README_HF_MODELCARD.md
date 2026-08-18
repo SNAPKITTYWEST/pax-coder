@@ -964,12 +964,12 @@ It is **not DRM.** It does not restrict what you build. It records that you show
 
 ### Getting a Key
 
-1. Donate at [collectivekitty.com/donate](https://collectivekitty.com/donate)
-2. Email `ahmedparr93@gmail.com` with subject `PAX-CODER NODE KEY REQUEST` + receipt
-3. Receive your signed node certificate
-4. Register: `pax-coder register --cert node_cert.json --pk node_sk.bin`
+1. **Request:** Submit provisioning request at [CONTACT.md](CONTACT.md)
+2. **Select tier:** Community ($0), Individual ($250-500), Commercial ($12-25K/yr), or Enterprise ($50K+/yr)
+3. **Approval:** PAX-Coder reviews (1–3 business days)
+4. **Receive:** Production-authorized Sovereign Node Key
 
-For full details, see [`SOVEREIGN_NODE_KEY.md`](SOVEREIGN_NODE_KEY.md).
+For full details, see [`SOVEREIGN_NODE_KEY.md`](SOVEREIGN_NODE_KEY.md) and [CONTACT.md](CONTACT.md).
 
 ---
 
@@ -1012,9 +1012,10 @@ swipl -q -t halt -f backends/license_policy.pl -- select open_source_project
 
 ### Commercial Licensing
 
-For proprietary use without open-source requirements, contact:
-- **Email:** `ahmedparr93@gmail.com`
-- **License terms:** Custom BSL arrangements available
+For commercial licensing and custom arrangements, contact:
+- **Email:** enterprise@snapkittywest.com
+- **Commercial tiers:** Individual ($250-500), Team ($12-25K/yr), Enterprise ($50K+/yr)
+- **Custom terms:** Available for specialized deployments
 
 ---
 
@@ -1061,9 +1062,9 @@ Evidence or Silence — 2026
 - **GitHub:** [github.com/SNAPKITTYWEST/pax-coder](https://github.com/SNAPKITTYWEST/pax-coder)
 - **HuggingFace:** [huggingface.co/Snapkitty/pax-coder-7b](https://huggingface.co/Snapkitty/pax-coder-7b)
 - **Ollama:** `ollama pull Snapkitty/pax-coder-7b`
-- **Email:** `ahmedparr93@gmail.com`
+- **Email:** pax-coder@snapkittywest.com
+- **Commercial:** enterprise@snapkittywest.com
 - **Discord:** [SnapKitty Community](https://discord.gg/snapkitty)
-- **Donate:** [collectivekitty.com/donate](https://collectivekitty.com/donate)
 
 ---
 

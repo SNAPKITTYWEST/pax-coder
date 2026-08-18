@@ -39,15 +39,20 @@ When you ask PAX-Coder for a kernel, it does not search for the nearest similar 
 
 ## 2. Getting a Sovereign Node Key
 
-Production use requires a node key. See `SOVEREIGN_NODE_KEY.md` for full instructions.
+Production-authorized use requires a provisioned Sovereign Node Key. See [SOVEREIGN_NODE_KEY.md](../SOVEREIGN_NODE_KEY.md) and [CONTACT.md](../CONTACT.md) for full instructions.
 
 **Short version:**
-- Donate at [collectivekitty.com/donate](https://collectivekitty.com/donate) (Node tier: $25)
-- Email `ahmedparr93@gmail.com` with subject `PAX-CODER NODE KEY REQUEST` + your receipt
-- Receive your Ed25519 node certificate
-- Register: `pax-coder register --cert node_cert.json --pk node_pk.bin`
+1. **Contact:** Submit provisioning request at [CONTACT.md](../CONTACT.md)
+2. **Select tier:**
+   - Community: $0 after approval (research/open-source only)
+   - Individual: $250-$500 per node (one-time, one workstation)
+   - Commercial: $12,000-$25,000/year (unlimited internal nodes)
+   - Enterprise: $50,000+/year (custom deployment)
+3. **Approval:** PAX-Coder reviews (1–3 business days)
+4. **Receive:** Node credential + operator-signed authorization
+5. **Use:** Protected operations now authorized
 
-Personal/research use without production deployment: node key not required.
+**Personal/research use:** Community tier ($0) available after approval.
 
 ---
 

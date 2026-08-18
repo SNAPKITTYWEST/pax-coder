@@ -1,46 +1,52 @@
-# Sovereign Node Key
+# Sovereign Node Key — Production Authorization Credential
 
-To run PAX-Coder in production you must hold a Sovereign Node Key.
+To run PAX-Coder in production you must hold a provisioned Sovereign Node Key.
 
-A node key is proof of contribution to the SnapKitty Sovereign Stack.
-It is an Ed25519 keypair derived from your donor transaction hash.
-Without a valid key, the PAX seal gate will refuse to sign outputs.
+A **Sovereign Node Key** is an Ed25519 keypair + operator-signed authorization record that grants production authorization for protected operations. The PAX-Coder authority signs the authorization; the node cannot self-authorize.
 
 ---
 
-## Why a Key Exists
+## What a Node Key Grants
 
-PAX-Coder is not a product built overnight. The PAX architecture — five axioms, eight proof
-obligations, formally verified GEMM pipeline, pipeline calculus, epilogue algebra — represents
-years of work. The Lean 4 proofs alone are hundreds of hours.
-
-**Running it without contributing is extraction. The key is the covenant.**
-
-It does not restrict what you build. It records that you showed up.
+A provisioned Sovereign Node Key authorizes a specific workstation/node to:
+- ✓ Sign production releases
+- ✓ Deploy production kernels
+- ✓ Perform protected operations within your authorized scope
 
 ---
 
-## Tiers
+## Commercial Pricing Model
 
-| Tier | Minimum | What You Get |
-|------|---------|--------------|
-| **Node** | $25 | 1 sovereign node key — run PAX-Coder, seal outputs |
-| **Forge** | $100 | Node key + listed as Forge Contributor in WORM ledger |
-| **Sovereign** | $500 | Node key + name sealed in genesis block of next chain |
-| **Enterprise** | $5,000/yr | Node key + `pax-verify` API access + custom fine-tuning + SLA |
+Production-authorized nodes are available through commercial tiers:
+
+| Tier | Price | What You Get |
+|------|-------|--------------|
+| **Community** | $0 (after approval) | Repository access, local testing, open-source use |
+| **Individual Node** | $250–$500 | One production-authorized node (one workstation) |
+| **Commercial Team** | $12,000–$25,000/year | Unlimited production-authorized nodes within your organization |
+| **Enterprise** | $50,000–$150,000+/year | Custom audits, white-label rights, direct SLA |
 
 ---
 
-## How to Get a Key
+## How to Get a Production-Authorized Node
 
-**Step 1 — Donate**
+**Step 1 — Request Access**
 
-- **Stripe:** [collectivekitty.com/donate](https://collectivekitty.com/donate)
-- **Email after payment:** `ahmedparr93@gmail.com`
-  Subject line: `PAX-CODER NODE KEY REQUEST`
-  Include: transaction hash or receipt
+Submit provisioning request at:
+- **Form:** [CONTACT.md](CONTACT.md)
+- **Email:** pax-coder@snapkittywest.com
 
-**Step 2 — Generate your Ed25519 keypair** (or we generate one for you)
+Include:
+- Your name/organization
+- Intended use case
+- Requested tier
+- Deployment requirements
+
+**Step 2 — Approval**
+
+PAX-Coder reviews and approves or denies (1–3 business days).
+
+**Step 3 — Generate Your Ed25519 Keypair** (or operator generates one for you)
 
 ```bash
 # Generate keypair (standard Ed25519)

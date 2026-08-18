@@ -4,7 +4,7 @@
 
 If you discover a security vulnerability in PAX-Coder, please **do not** open a public GitHub issue. Instead:
 
-1. Email `ahmedparr93@gmail.com` with:
+1. Email `security@snapkittywest.com` with:
    - Description of the vulnerability
    - Steps to reproduce
    - Potential impact
@@ -21,21 +21,22 @@ We will:
 
 ## Security Model
 
-### Sovereign Node Key
+### Sovereign Node Key — Production Authorization
 
-All PAX-Coder outputs are signed with an Ed25519 keypair (Sovereign Node Key). See [SOVEREIGN_NODE.md](SOVEREIGN_NODE.md) for full details.
+All production-authorized PAX-Coder operations are signed with a provisioned Sovereign Node Key (Ed25519 keypair). See [SOVEREIGN_NODE.md](SOVEREIGN_NODE.md) for full details.
 
 **What it proves:**
-- Integrity of repository at a specific git commit
-- Prior-art timestamp (code existed at time X)
-- Authenticity (signer has the private key)
-- Non-repudiation (signer cannot deny signing)
+- **Node Authorization** — The PAX-Coder authority has provisioned and authorized this node
+- **Integrity** — Repository state at a specific git commit
+- **Prior-art timestamp** — Code existed at time X
+- **Authenticity** — Signer has the private key for this node
+- **Non-repudiation** — Signer cannot deny signing
 
-**What it does NOT prove:**
-- Authority (who should be trusted?)
-- Legal ownership
-- Code quality or correctness
-- Blockchain confirmation (unless explicitly anchored)
+**What it does NOT prove (without authorization record):**
+- **Node authorization alone** — Node identity without operator signature does not grant authorization
+- **Legal ownership** — No embedded legal claims
+- **Code quality** — Only proves authorization and existence, not correctness
+- **Blockchain confirmation** — Unless explicitly anchored to Bitcoin
 
 ### Private Key Protection
 

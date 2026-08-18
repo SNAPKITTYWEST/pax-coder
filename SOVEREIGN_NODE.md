@@ -1,17 +1,25 @@
-# Sovereign Node Key — Security & Integrity
+# Sovereign Node Key — Production Authorization & Integrity
 
 This document explains what the Sovereign Node Key system is, what it proves, and how to use it safely.
 
 ## Overview
 
-Every PAX-Coder output is signed with a **Sovereign Node Key** — an Ed25519 keypair that cryptographically commits to:
+A **Sovereign Node Key** is a production authorization credential consisting of:
 
-1. The exact git commit that produced the output
-2. The repository state at that moment (SHA-256 commitment)
-3. A tamper-evident prior-art timestamp
-4. The signer's identity (public key)
+1. **Node identity** — Ed25519 keypair uniquely identifying a provisioned node
+2. **Authorization record** — Operator-signed proof that this node is authorized for protected operations
+3. **Repository commitment** — SHA-256 hash of repository state at key generation time
+4. **Prior-art timestamp** — Tamper-evident record of when this work existed
+5. **Signer identity** — Public key for signature verification
 
 ## What It Proves
+
+### Node Authorization (NEW)
+✓ The PAX-Coder authority has provisioned and authorized this node  
+✓ The authorization is cryptographically bound to this node's public key  
+✓ The authorization is operator-signed and cannot be self-created  
+✓ Protected operations require a valid authorization record  
+✓ Unauthorized, revoked, or expired nodes are denied
 
 ### Integrity
 ✓ The repository has not been tampered with since the key was generated  
@@ -21,7 +29,7 @@ Every PAX-Coder output is signed with a **Sovereign Node Key** — an Ed25519 ke
 ### Timestamp
 ✓ This code existed at a specific UTC time  
 ✓ The git commit hash is cryptographically tied to that moment  
-✓ No claim is made about what the code does, only when it existed
+✓ The prior-art timestamp is tamper-evident (local or Bitcoin-anchored)
 
 ### Authenticity
 ✓ Outputs signed with this key were produced by the holder of `.node_sk`  
@@ -32,14 +40,14 @@ Every PAX-Coder output is signed with a **Sovereign Node Key** — an Ed25519 ke
 ✓ The signer cannot later deny having created the signature  
 ✓ The signature proves possession of the private key at the time of signing
 
-## What It Does NOT Prove
+## What It Does NOT Prove (Alone)
 
-### Authority
-✗ Who actually controls this key?  
-✗ Does the key holder have legal authority?  
-✗ Is the key holder trustworthy?
+### Node Authorization (Without Authorization Record)
+✗ Node identity alone does not grant authorization  
+✗ A valid signature does not grant authorization  
+✗ Possession of a node key does not grant authorization  
 
-**Outside this system.** Authority is established separately (e.g., GitHub organization, legal contracts, institutional review).
+**Authorization requires:** valid operator-signed authorization record + ACTIVE status + valid lifetime + non-revoked status
 
 ### Legal Ownership
 ✗ Does the signer own the work?  

@@ -164,8 +164,10 @@ pax-coder/
    - See `../src/` for actual GPU kernels
    - See `../docs/` for detailed docs
 
-3. **Get a Sovereign Node Key**:
-   - Visit https://collectivekitty.com/donate
+3. **Get a Sovereign Node Key** (for production):
+   - Submit request: See `../CONTACT.md`
+   - Select tier (Community $0, Individual $250-500, Commercial $12-25K/yr)
+   - Receive provisioned authorization
    - Required for production use
 
 4. **Fine-tune your own**:

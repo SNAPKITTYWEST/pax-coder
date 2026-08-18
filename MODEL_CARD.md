@@ -227,11 +227,11 @@ Production use requires a Sovereign Node Key.
 | Tier | Price | What you get |
 |------|-------|-------------|
 | Node | $25 | Key + production use |
-| Forge | $100 | Key + WORM ledger credit |
-| Sovereign | $500 | Key + genesis block seal |
-| Enterprise | $5K/yr | Key + `pax-verify` API + SLA |
+| Individual | $250–$500 | 1 production-authorized node (one-time) |
+| Commercial | $12K–$25K/yr | Unlimited production nodes + commercial licensing |
+| Enterprise | $50K+/yr | Custom audits + white-label rights |
 
-Get one: [collectivekitty.com/donate](https://collectivekitty.com/donate) → email `ahmedparr93@gmail.com`
+Get one: Contact [`CONTACT.md`](https://github.com/SNAPKITTYWEST/pax-coder/blob/master/CONTACT.md)
 
 Full instructions: [`SOVEREIGN_NODE_KEY.md`](https://github.com/SNAPKITTYWEST/pax-coder/blob/master/SOVEREIGN_NODE_KEY.md)
 
