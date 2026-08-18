@@ -181,28 +181,73 @@ fi
 echo ""
 
 # ============================================================================
-# PART 6: CAPABILITY SIGNATURE VERIFICATION (future: wire to server key)
+# PART 6: CAPABILITY SIGNATURE VERIFICATION (Ed25519 cryptographic validation)
 # ============================================================================
 
 echo "[6/6] Verifying capability signature..."
 
-# For now, accept valid format as proof
-# In production, verify signature against authorized public key
-# TODO: Wire this to server public key for real verification
+# Authority public key (Ed25519) - from sovereign/node_pk.pem
+# This is the canonical authority for capability issuance
+AUTHORITY_PUBLIC_KEY_FILE="$SOVEREIGN_DIR/node_pk.pem"
+
+if [ ! -f "$AUTHORITY_PUBLIC_KEY_FILE" ]; then
+  echo "ERROR: Authority public key not found at $AUTHORITY_PUBLIC_KEY_FILE"
+  exit 3
+fi
 
 if [ -z "$CAPABILITY_SIGNATURE" ]; then
   echo "DENIED: Capability signature missing"
   exit 2
 fi
 
-# Validate signature format (should be hex)
+# Validate signature format (should be 128 hex characters = 64 bytes)
 if ! echo "$CAPABILITY_SIGNATURE" | grep -qE '^[a-f0-9]{128}$'; then
-  echo "DENIED: Capability signature invalid format"
+  echo "DENIED: Capability signature invalid format (expected 128 hex chars)"
   exit 2
 fi
 
-echo "    ✓ Signature format valid"
-echo "    ✓ Signature verified (format check)"
+# Create canonical JSON representation for verification
+# Must be deterministically serialized (sorted keys, no extra whitespace)
+# Same format as used by the capability issuer
+CAPABILITY_CANONICAL=$(echo "$CAPABILITY_JSON" | jq -S -c .)
+
+if [ -z "$CAPABILITY_CANONICAL" ]; then
+  echo "ERROR: Failed to parse capability JSON"
+  exit 3
+fi
+
+# Convert hex signature to binary for openssl verification
+SIGNATURE_BIN=$(printf '%s' "$CAPABILITY_SIGNATURE" | xxd -r -p 2>/dev/null) || {
+  echo "DENIED: Could not decode signature"
+  exit 2
+}
+
+# Create temporary files for verification
+TEMP_MSG="/tmp/pax-capability-msg-$$.bin"
+TEMP_SIG="/tmp/pax-capability-sig-$$.bin"
+
+trap "rm -f '$TEMP_MSG' '$TEMP_SIG'" EXIT
+
+# Write canonical JSON to temp file
+echo -n "$CAPABILITY_CANONICAL" > "$TEMP_MSG"
+
+# Write binary signature to temp file
+printf '%s' "$SIGNATURE_BIN" > "$TEMP_SIG"
+
+# Verify signature using openssl with Ed25519
+# The node_pk.pem is a public key in PEM format
+# Use -pubin flag to indicate it's a public key (not private)
+if openssl pkeyutl -verify -inkey "$AUTHORITY_PUBLIC_KEY_FILE" \
+                    -pubin -sigfile "$TEMP_SIG" \
+                    -in "$TEMP_MSG" > /dev/null 2>&1; then
+  echo "    ✓ Signature format valid"
+  echo "    ✓ Signature verified (cryptographic validation)"
+else
+  echo "DENIED: Capability signature verification failed"
+  echo "    The signature is invalid or was not issued by the authority"
+  exit 2
+fi
+
 echo ""
 
 # ============================================================================
