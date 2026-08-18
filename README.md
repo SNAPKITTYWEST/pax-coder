@@ -39,6 +39,25 @@ This confirms:
 
 If verification fails: **Do NOT trust this clone.**
 
+### Checking for Protected Operations
+
+If you need to perform protected operations (e.g., signing releases), verify both integrity AND authorization:
+
+```bash
+./scripts/verify-release
+```
+
+This script checks:
+- ✓ Clone integrity (same as verify-clone)
+- ✓ Authorization status (do you have capability?)
+
+**Possible outcomes:**
+- `VERIFIED_AND_AUTHORIZED` (exit 0) — You can perform protected operations
+- `VERIFIED_NOT_AUTHORIZED` (exit 2) — Clone is authentic but no authorization
+- `INTEGRITY_FAILED` (exit 1) — Clone integrity check failed
+
+📖 Authorization architecture: [docs/adr/0002-authorization-boundary.md](docs/adr/0002-authorization-boundary.md)
+
 ---
 
 ## 🔐 Sovereign Node Key & Security
