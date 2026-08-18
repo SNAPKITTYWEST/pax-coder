@@ -19,10 +19,29 @@ standard:
 The repository supports work on proof-carrying CUDA generation for NVIDIA
 Ampere `sm_86`, with RTX 3080 as the primary engineering target.
 
+## Public and Internal Model Boundary
+
+PAX-Coder is the public-facing model package for this program. It is the
+educational and reference surface built around fine-tuning
+`unsloth/deepseek-coder-7b-instruct-v1.5-bnb-4bit` on the PAX proof/kernel
+corpus.
+
+Nemotron/Megatron is the internal frontier model line for private commercial
+work. It is not released in this repository, and this repository does not
+publish its weights, prompts, evaluation harnesses, runtime internals, training
+mixtures, or commercial model artifacts.
+
+Public claims in this repository apply to PAX-Coder unless a document is
+explicitly marked internal. Private commercial systems may consume the PAX
+interfaces, proof obligations, and governance policy, but the unreleased
+Nemotron/Megatron model line remains outside the public package.
+
 ## Institutional Status
 
 | Area | Current repository evidence | Status |
 | --- | --- | --- |
+| Public model surface | PAX-Coder, a public educational/reference package fine-tuned from DeepSeek-Coder-7B | Public |
+| Internal model line | Nemotron/Megatron frontier model line for private commercial work | Not released here |
 | Lean proof library | `PAX/ConstraintDAG.lean`, `PAX/PipelineDAG.lean`, `PAX/IR_DAG.lean`, `PAX/Float16_Rounding.lean`, `PAX/WMMA.lean`, `PAX/TrainingData.lean` | Present |
 | CUDA kernel sources | `src/rtx_gemm_ptx.cu`, `src/rtx_gemm_pipeline.cu`, `src/rtx_gemm_epilogue.cu` | Present |
 | Futhark specification | `src/pax_kernel.fut` | Present |
@@ -49,8 +68,10 @@ flowchart LR
     futhark --> exporter
     exporter --> dataset["JSONL training splits"]
     dataset --> finetune["QLoRA fine-tuning"]
-    finetune --> model["PAX-Coder model artifact"]
-    model --> verify["Verification gate"]
+    finetune --> publicModel["PAX-Coder public model artifact"]
+    institution --> internalModel["Nemotron/Megatron internal frontier model"]
+    publicModel --> verify["Verification gate"]
+    internalModel -. private commercial boundary .-> verify
     verify --> release["Authorized release / node-key seal"]
 ```
 
@@ -325,6 +346,11 @@ proof-oriented kernel generator with these output families:
 - Futhark functional specification
 - PAX proof-obligation mapping
 
+Within this repository, "the model" means the public PAX-Coder package unless a
+document explicitly says otherwise. The internal Nemotron/Megatron frontier
+model line is not packaged here and is not required to inspect, train, or run
+the public PAX-Coder artifact.
+
 Example Ollama packaging flow after a GGUF artifact exists:
 
 ```bash
@@ -415,12 +441,17 @@ Institutional distinction:
 
 This project is suitable for:
 
+- public demonstration and education around verified GPU kernel generation,
 - internal research on verified GPU kernel generation,
 - proof-carrying code experiments,
 - CUDA/PTX training-data development,
 - institutional verification workflows,
 - commercial evaluation under the appropriate license path,
 - and enterprise discussions around `pax-verify` style verification services.
+
+PAX-Coder is the public face of the program. Nemotron/Megatron is the internal
+frontier model line for commercial work and is intentionally not released as
+part of this repository.
 
 Commercial teams should not treat generated kernels as approved artifacts until
 the verification pipeline has produced current evidence for the exact kernel,
