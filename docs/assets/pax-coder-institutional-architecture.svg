@@ -1,0 +1,87 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720" role="img" aria-labelledby="title desc">
+  <title id="title">PAX-Coder institutional architecture</title>
+  <desc id="desc">Institutional map of PAX-Coder showing proof corpus, CUDA and Futhark sources, training export, model generation, verification gates, licensing, and release governance.</desc>
+  <defs>
+    <style>
+      .bg { fill: #f7f8fb; }
+      .title { fill: #18202a; font: 700 34px Segoe UI, Arial, sans-serif; }
+      .subtitle { fill: #485667; font: 18px Segoe UI, Arial, sans-serif; }
+      .section { fill: #ffffff; stroke: #b9c4d2; stroke-width: 2; }
+      .proof { fill: #eef7f0; stroke: #4f9d69; stroke-width: 2; }
+      .impl { fill: #eef3fb; stroke: #4c78a8; stroke-width: 2; }
+      .gate { fill: #fff7e6; stroke: #c98f1a; stroke-width: 2; }
+      .release { fill: #f5edf9; stroke: #8e5ab5; stroke-width: 2; }
+      .label { fill: #1d2630; font: 700 20px Segoe UI, Arial, sans-serif; }
+      .text { fill: #354253; font: 16px Segoe UI, Arial, sans-serif; }
+      .small { fill: #536273; font: 14px Segoe UI, Arial, sans-serif; }
+      .arrow { stroke: #4c6178; stroke-width: 3; fill: none; marker-end: url(#arrowhead); }
+      .dash { stroke: #b37b11; stroke-width: 3; fill: none; stroke-dasharray: 8 7; marker-end: url(#arrowhead-gold); }
+    </style>
+    <marker id="arrowhead" markerWidth="12" markerHeight="8" refX="11" refY="4" orient="auto">
+      <polygon points="0 0, 12 4, 0 8" fill="#4c6178"/>
+    </marker>
+    <marker id="arrowhead-gold" markerWidth="12" markerHeight="8" refX="11" refY="4" orient="auto">
+      <polygon points="0 0, 12 4, 0 8" fill="#b37b11"/>
+    </marker>
+  </defs>
+
+  <rect class="bg" width="1280" height="720"/>
+  <text class="title" x="52" y="58">PAX-Coder Institutional Architecture</text>
+  <text class="subtitle" x="54" y="88">Proof-carrying GPU kernel generation with explicit evidence, license, and release gates</text>
+
+  <rect class="proof" x="52" y="138" width="230" height="150" rx="6"/>
+  <text class="label" x="78" y="176">Proof Corpus</text>
+  <text class="text" x="78" y="212">Lean 4 modules</text>
+  <text class="small" x="78" y="238">axioms and obligations</text>
+  <text class="small" x="78" y="262">must build cleanly</text>
+
+  <rect class="impl" x="326" y="138" width="230" height="150" rx="6"/>
+  <text class="label" x="352" y="176">Kernel Sources</text>
+  <text class="text" x="352" y="212">CUDA / PTX / Futhark</text>
+  <text class="small" x="352" y="238">sm_86 target path</text>
+  <text class="small" x="352" y="262">runtime validation required</text>
+
+  <rect class="section" x="600" y="138" width="230" height="150" rx="6"/>
+  <text class="label" x="626" y="176">Training Export</text>
+  <text class="text" x="626" y="212">JSONL examples</text>
+  <text class="small" x="626" y="238">proof/code/spec alignment</text>
+  <text class="small" x="626" y="262">dataset provenance</text>
+
+  <rect class="section" x="874" y="138" width="230" height="150" rx="6"/>
+  <text class="label" x="900" y="176">PAX-Coder Model</text>
+  <text class="text" x="900" y="212">candidate artifact output</text>
+  <text class="small" x="900" y="238">Lean + CUDA/PTX + spec</text>
+  <text class="small" x="900" y="262">not self-certifying</text>
+
+  <path class="arrow" d="M282 213 L316 213"/>
+  <path class="arrow" d="M556 213 L590 213"/>
+  <path class="arrow" d="M830 213 L864 213"/>
+
+  <rect class="gate" x="180" y="398" width="250" height="158" rx="6"/>
+  <text class="label" x="206" y="436">Verification Gate</text>
+  <text class="text" x="206" y="472">lake build</text>
+  <text class="text" x="206" y="498">placeholder scan</text>
+  <text class="text" x="206" y="524">CUDA/PTX compile</text>
+  <text class="small" x="206" y="548">reference comparison</text>
+
+  <rect class="gate" x="514" y="398" width="250" height="158" rx="6"/>
+  <text class="label" x="540" y="436">Governance Gate</text>
+  <text class="text" x="540" y="472">license selection</text>
+  <text class="text" x="540" y="498">node-key policy</text>
+  <text class="text" x="540" y="524">seal record</text>
+  <text class="small" x="540" y="548">commercial authorization</text>
+
+  <rect class="release" x="848" y="398" width="250" height="158" rx="6"/>
+  <text class="label" x="874" y="436">Release Decision</text>
+  <text class="text" x="874" y="472">staging candidate</text>
+  <text class="text" x="874" y="498">production candidate</text>
+  <text class="text" x="874" y="524">blocked with evidence</text>
+  <text class="small" x="874" y="548">claim must cite command</text>
+
+  <path class="dash" d="M989 288 C920 340 560 340 305 398"/>
+  <path class="arrow" d="M430 477 L504 477"/>
+  <path class="arrow" d="M764 477 L838 477"/>
+
+  <text class="small" x="54" y="652">Institutional rule: claim -> file -> command -> output -> hardware/toolchain -> license path.</text>
+  <text class="small" x="54" y="678">If any link is absent, the release status is pending instead of certified.</text>
+</svg>
