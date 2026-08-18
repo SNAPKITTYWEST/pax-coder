@@ -44,8 +44,8 @@ CONFIG = {
     "save_steps": 100,
 
     # Output
-    "output_dir": "pax-coder-7b-rtx3080",
-    "run_name": "pax-coder-7b-sm86-rtx3080",
+    "output_dir": "pax-coder-7b",
+    "run_name": "pax-coder-7b-sm86",
     "report_to": "none",      # set "wandb" if logged in
 }
 

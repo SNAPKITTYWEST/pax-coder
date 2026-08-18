@@ -1,4 +1,4 @@
-FROM ./pax-coder-7b-gguf/unsloth.Q4_K_M.gguf
+FROM ./pax-coder-7b/gguf/pax-coder-7b-q4_k_m.gguf
 
 TEMPLATE """{{ .System }}
 

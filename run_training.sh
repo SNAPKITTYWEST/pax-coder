@@ -31,10 +31,10 @@ export PYTORCH_CUDA_ALLOC_CONF="max_split_size_mb:128,expandable_segments:True"
 export CUDA_LAUNCH_BLOCKING=0
 export TOKENIZERS_PARALLELISM=false
 
-python3 finetune_pax_coder_rtx3080.py
+python3 train.py
 
 echo ""
 echo "=== Done ==="
-echo "Install: ollama create pax-coder -f pax-coder-7b-rtx3080/gguf/Modelfile"
+echo "Install: ollama create pax-coder -f pax-coder-7b/gguf/Modelfile"
 echo "Run:     ollama run pax-coder 'Write a verified GEMM kernel for RTX 3080'"
-echo "Push:    huggingface-cli upload Snapkitty/pax-coder-7b pax-coder-7b-rtx3080/gguf/ --repo-type model"
+echo "Push:    huggingface-cli upload Snapkitty/pax-coder-7b pax-coder-7b/gguf/ --repo-type model"
