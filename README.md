@@ -21,27 +21,33 @@ Ampere `sm_86`, with RTX 3080 as the primary engineering target.
 
 ---
 
-## 💰 Commercial Access & Node Provisioning
+## 🔐 Access & Provisioning
 
-**Source code is public.** You can clone, read, and verify integrity.
+**PAX-Coder requires authorization to clone.**
 
-**Operational access requires approval.** To provision a Sovereign Node and perform protected operations:
+To access the repository and receive a provisioned Sovereign Node:
 
-- **Community/Contributor:** $0 (after approval for qualifying use)
-- **Individual:** $250–$500 (per provisioned node)
+1. **Contact:** Submit access request at [CONTACT.md](CONTACT.md)
+2. **Select tier:** Choose the appropriate plan
+3. **Approval:** PAX-Coder reviews and approves
+4. **Payment (if applicable):** Complete commercial agreement
+5. **Provisioning:** Receive authenticated clone credentials + node key
+
+**Pricing:**
+
+- **Community/Contributor:** $0 (approved open-source/research)
+- **Individual:** $250–$500 (per provisioned node, one-time)
 - **Commercial Team:** $12,000–$25,000/year (unlimited nodes)
-- **Enterprise:** $50,000–$150,000+/year (custom deployment, formal audits)
+- **Enterprise:** $50,000–$150,000+/year (custom deployment, audits)
 
 📖 [Full Pricing & Plans](PRICING.md)  
-📞 [Request Node Provisioning](CONTACT.md)
+📞 [Request Access](CONTACT.md)
 
 ---
 
-## ✅ Source Code Verification
+## ✅ Clone Verification
 
-**The source code is public.** You can clone, read, and verify integrity free of charge.
-
-After cloning, verify your copy is authentic:
+**After receiving authorized clone access, verify your copy is authentic:**
 
 ```bash
 ./scripts/verify-clone
@@ -105,33 +111,32 @@ Operations that require proof of authorization from the PAX-Coder authority:
 
 The gate requires a cryptographically signed capability from the external authorization authority.
 
-### Node Provisioning Flow
+### Getting Access
 
-**Option 1: Generate a Local Node Identity (Public)**
+**Step 1: Request Access**
 
-Anyone can create a local node identity, but it is NOT automatically authorized:
+Fill out the provisioning form at [CONTACT.md](CONTACT.md) with:
+- Your name/organization
+- Intended use case
+- Requested tier
+- Deployment requirements
 
-```bash
-cd sovereign
-./generate_node_key.sh      # Creates unregistered identity
-./verify_node_key.sh        # Verify identity structure is valid
-```
+**Step 2: Approval**
 
-This creates:
-- `node.json` — Your public identity metadata
-- `node_pk.pem` — Your public key
-- `.node_sk` — Your private key (local only, never committed)
+PAX-Coder reviews and approves your request.
 
-**Your local node is UNREGISTERED and UNAUTHORIZED.** Protected operations will fail.
+**Step 3: Payment (if applicable)**
 
-**Option 2: Request Provisioning (Required for Protected Operations)**
+- Community: $0 (after approval for qualifying use)
+- Individual: $250–$500 per node
+- Commercial/Enterprise: Per tier pricing
 
-To perform protected operations (signing releases, production deployment), you must be provisioned:
+**Step 4: Clone Access + Node Key**
 
-1. [Contact PAX-Coder](CONTACT.md) and request node provisioning
-2. Select your tier (Community $0, Individual $250–$500, Commercial/Enterprise)
-3. After approval: PAX-Coder provisions a REAL node credential
-4. Use provisioned credential for protected operations
+After approval (and payment if required), you receive:
+- Authenticated credentials to clone the repository
+- Provisioned Sovereign Node keypair (node_sk, node_pk.pem)
+- node.json and provisioning metadata
 
 ### Authorized Execution (With Capability Token)
 
