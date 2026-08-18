@@ -2,9 +2,14 @@
   <img src="docs/assets/pax-coder-institutional-architecture.svg" alt="PAX-Coder institutional architecture" width="920"/>
 </p>
 
-# PAX-Coder
+# ⛔ PAX-Coder — Commercial Authorization Required
+
+**🔒 CLONE REQUIRES AUTHORIZATION** — Contact pax-coder@snapkittywest.com for access
 
 Institutional program for proof-carrying GPU kernel generation.
+
+PAX-Coder is a commercially gated system. Cloning and production use require 
+cryptographic authorization obtained through contact, approval, and commercial terms.
 
 PAX-Coder is a repository for the PAX verified-kernel program: Lean 4 proof
 modules, CUDA/PTX kernel templates, Futhark functional specifications, a
@@ -21,15 +26,23 @@ Ampere `sm_86`, with RTX 3080 as the primary engineering target.
 
 ---
 
-## 🔐 Access & Provisioning
+## 🔐 Commercial Authorization Gate
 
-**PAX-Coder is a commercially gated system.**
+**Clone Status: GATED**
 
-**Repository:** Publicly available on GitHub. Anyone can clone for verification/testing/education.
+All clones require cryptographic authorization. The gate prevents unauthorized access at clone time.
 
-**Production Authorization:** Contact-controlled. Requires approval and operator-signed provisioning. Not automatic. Not self-service. Not free-for-all.
+**How to Get Access:**
+1. **Contact:** pax-coder@snapkittywest.com
+2. **Request:** Specify your use case and tier
+3. **Approval:** PAX-Coder authority reviews (1–3 business days)
+4. **Payment:** Commercial agreement + payment processing
+5. **Authorization:** Receive Sovereign Node Key credential
+6. **Clone:** Use authorized credential to clone
 
-> **PAX-Coder source is publicly cloneable for inspection and verification. Production authorization is separate: contact, approval, applicable commercial terms, and operator-issued Node Key provisioning are required before authorized production deployment.**
+> **Clone Access:** Contact → Approval → Payment → Provisioning → Authorized Clone
+> 
+> **Authorization Required:** This repository enforces cryptographic authorization at clone time. Unauthorized access is denied by the authentication gate.
 
 To perform protected operations (signing releases, production deployment) and receive a provisioned Sovereign Node:
 
@@ -50,13 +63,30 @@ To perform protected operations (signing releases, production deployment) and re
 
 ---
 
-## ✅ Clone Verification
+## ✅ Authorization & Integrity Verification
 
-**Anyone can clone. Verify your copy is authentic:**
+**After authorization, verify your clone is authentic:**
 
 ```bash
+# Verify integrity (cryptographic proof of authenticity)
 ./scripts/verify-clone
+
+# Verify authorization (check your node credential)
+./scripts/verify-node-authorization
+
+# Verify gate status
+./scripts/pax-coder-gate
 ```
+
+**Pricing & Tiers:**
+
+| Tier | Price | Clone Access | Deployment |
+|------|-------|--------------|-----------|
+| **Individual Node** | $250–$500 (one-time) | ✅ Yes | ✅ Single workstation |
+| **Commercial Team** | $12–25K/year | ✅ Yes | ✅ Unlimited internal nodes |
+| **Enterprise** | $50K–150K+/year | ✅ Yes | ✅ Custom deployment + audits |
+
+📖 [Full Pricing](PRICING.md) • 📞 [Request Access](CONTACT.md)
 
 This confirms:
 - ✓ Git commit matches official release
