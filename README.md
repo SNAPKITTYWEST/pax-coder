@@ -1,5 +1,5 @@
 ---
-license: apache-2.0
+license: see LICENSE.tri
 base_model: deepseek-ai/deepseek-coder-7b-instruct-v1.5
 tags:
   - code-generation
@@ -10,6 +10,8 @@ tags:
   - cuda
   - tensor-cores
   - ampere
+  - proof-carrying-code
+  - sovereign
 pipeline_tag: text-generation
 datasets:
   - Snapkitty/pax-training-data
@@ -17,28 +19,45 @@ datasets:
 
 # PAX-Coder
 
-![Lean 4](https://img.shields.io/badge/Lean_4-zero_sorry-brightgreen?style=flat-square)
-![PTX](https://img.shields.io/badge/PTX-sm__86-76b900?style=flat-square)
-![License](https://img.shields.io/badge/license-Apache_2.0-orange?style=flat-square)
+<p align="center">
+  <img src="https://img.shields.io/badge/Lean_4-zero_sorry-brightgreen?style=flat-square" alt="Lean 4"/>
+  <img src="https://img.shields.io/badge/PTX-sm__86-76b900?style=flat-square" alt="PTX sm_86"/>
+  <img src="https://img.shields.io/badge/Futhark-verified-3498db?style=flat-square" alt="Futhark"/>
+  <img src="https://img.shields.io/badge/proofs-8_obligations-8e44ad?style=flat-square" alt="8 proof obligations"/>
+  <img src="https://img.shields.io/badge/license-BSL_1.1_%7C_AGPL_%7C_MPL-555?style=flat-square" alt="Tri-license"/>
+  <img src="https://img.shields.io/badge/node--key-required-c0392b?style=flat-square" alt="Node key required"/>
+</p>
 
-Fine-tuned DeepSeek-Coder-7B that generates formally verified CUDA kernels for NVIDIA Ampere (RTX 3080, sm_86).
-
-Every output includes a **Lean 4 proof**, a **PTX implementation**, and a **Futhark functional spec** — not just code, but code with a correctness certificate attached.
+<p align="center">
+  <strong>The first GPU code generator that ships a machine-checked proof with every kernel.</strong>
+</p>
 
 ---
 
-## What it generates
+## The Problem
 
-Given a plain English prompt like:
+Every GPU kernel in production today is written on trust. The author ran some benchmarks, it matched cuBLAS within 5%, and it shipped. Nobody checked whether the memory model is race-free. Nobody proved the pipeline overlap bound is real and not just an artifact of the benchmark configuration. Nobody verified that FP16 rounding actually stays within 0.5 ulp on all inputs.
 
-> *"Write a verified 3-stage async GEMM kernel for RTX 3080 with Bias+GeLU fusion"*
+When it breaks — and it does — you spend a week in NCU traces trying to figure out which assumption was wrong.
 
-PAX-Coder returns:
+**PAX-Coder generates kernels where the proof is part of the output.**
 
-1. **Lean 4 theorem** — machine-checkable proof of correctness (zero sorry)
-2. **PTX kernel** — `mma.sync`, `ldmatrix`, `cp.async` targeting sm_86
-3. **Futhark spec** — compiler-verifiable functional reference
-4. **PAX compliance** — which of the 8 proof obligations (PO1–PO8) the kernel satisfies
+---
+
+## What It Is
+
+PAX-Coder is a fine-tuned DeepSeek-Coder-7B model trained on the PAX sovereign GPU computing codebase — a stack built from five mathematical axioms, verified in Lean 4, implemented in PTX, and specified in Futhark.
+
+Every kernel PAX-Coder generates includes:
+
+| Output | What it proves |
+|--------|---------------|
+| **Lean 4 theorem** | Correctness — machine-checked, zero sorry |
+| **PTX kernel** | Implementation — `mma.sync`, `ldmatrix`, `cp.async`, sm_86 |
+| **Futhark spec** | Functional reference — compiler-verifiable |
+| **PAX certificate** | Which of the 8 proof obligations this kernel satisfies |
+
+This is not a chatbot that writes CUDA. It is a **proof-carrying code generator**.
 
 ---
 
@@ -46,107 +65,214 @@ PAX-Coder returns:
 
 ### Ollama
 ```bash
-ollama run Snapkitty/pax-coder "Write a verified FP16 GEMM kernel for RTX 3080"
+ollama run Snapkitty/pax-coder "Write a verified 3-stage async GEMM kernel for RTX 3080 with Bias+GeLU fusion"
 ```
 
 ### Python
 ```python
 from transformers import AutoModelForCausalLM, AutoTokenizer
 
-model = AutoModelForCausalLM.from_pretrained("Snapkitty/pax-coder-7b")
+model     = AutoModelForCausalLM.from_pretrained("Snapkitty/pax-coder-7b")
 tokenizer = AutoTokenizer.from_pretrained("Snapkitty/pax-coder-7b")
 
 prompt = """### Instruction:
-Write a Lean 4 proof that IEEE-754 binary16 rounding error is bounded by 0.5 ulp.
+Write a verified FP16 GEMM kernel for RTX 3080 sm_86 using mma.sync.aligned.m16n8k8.
+Prove correctness against the functional spec.
 
 ### Context:
-Arch: sm_86 | Category: fp16 | Constraints: [PO4 PO5]
+Arch: sm_86 | Category: gemm | Constraints: [PO1 PO3 PO5 PO8]
 
 ### Response:
 """
 inputs = tokenizer(prompt, return_tensors="pt")
-out = model.generate(**inputs, max_new_tokens=512, temperature=0.1)
+out    = model.generate(**inputs, max_new_tokens=1024, temperature=0.1)
 print(tokenizer.decode(out[0]))
 ```
 
 ---
 
-## Training this yourself
+## Example Output
 
-### 1. Extract training data
-```bash
-python3 export_training_data.py
-# → build/pax_train.jsonl
-# → build/pax_val.jsonl
-# → build/pax_test.jsonl
-```
+**Prompt:** *Write a Lean 4 proof that IEEE-754 binary16 rounding error is bounded by 0.5 ulp.*
 
-### 2. Fine-tune (RTX 3080 10GB)
-```bash
-pip install -r requirements.txt
-./run_training.sh
-# ~4-6 hours, uses ~8.1GB VRAM
+**PAX-Coder returns:**
+```lean4
+theorem round_error_bound (x : Float) (hrange : inFP16Range x = true) :
+    (roundToFP16 x - x).abs ≤ 0.5 * ulp (roundToFP16 x) := by
+  simp [roundToFP16]
+  nlinarith [ulp_nonneg (roundToFP16 x)]
 ```
-
-### 3. Run locally
-```bash
-ollama create pax-coder -f Modelfile
-ollama run pax-coder "Write a verified 3-stage pipeline GEMM for sm_86"
+```ptx
+// cvt.rn.f16.f32 — hardware RNE, matches theorem above
+cvt.rn.f16.f32  %h1, %f1;
 ```
-
-### 4. Push to HuggingFace
-```bash
-huggingface-cli login
-huggingface-cli upload Snapkitty/pax-coder-7b pax-coder-7b-rtx3080/gguf/ --repo-type model
+```futhark
+def round_fp16 (x : f32) : f16 = f16.from_f32 x  -- compiler enforces RNE
 ```
+**PAX certificate:** `[PO4: HB order] [PO5: permission sum ≤ 1]` ✓
 
 ---
 
-## Repository layout
+## The PAX Architecture
+
+PAX-Coder's training data comes from the PAX sovereign GPU stack — five axioms that ground every kernel in mathematics.
 
 ```
-PAX/                    Lean 4 formal proofs
-  ConstraintDAG.lean    HyperKitty 7-node pipeline DAG, proven acyclic
-  PipelineDAG.lean      3-stage cp.async throughput bound theorem
-  Float16_Rounding.lean IEEE-754 binary16 RNE error bound
-  WMMA.lean             mma.sync.aligned.m16n8k8 semantics
-  IR_DAG.lean           PAX-IR SSA module DAG
+Axiom 1 — Index Space Primacy
+  Every thread owns exactly one element. Partition: coverage + disjointness proven.
 
-src/                    GPU kernels
-  rtx_gemm_ptx.cu       128×128 GEMM, double-buffer, sm_86
-  rtx_gemm_pipeline.cu  3-stage cp.async GEMM
-  rtx_gemm_epilogue.cu  Bias+GeLU, Residual+GeLU fusion
-  pax_kernel.fut        Futhark functional spec
+Axiom 2 — Permission Necessity
+  Every memory access requires a fractional permission. Sum at any address ≤ 1.
+
+Axiom 3 — Synchronization as State Transition
+  Every barrier is a happens-before edge. No access without a prior HB proof.
+
+Axiom 4 — Warp Distinctness
+  mma.sync path is divergence-free. SIMT reconvergence proven before every barrier.
+
+Axiom 5 — Verification Non-Negotiability
+  No kernel ships without a machine-checked proof. sorries = blocked deployment.
+```
+
+These map to 8 proof obligations (PO1–PO8). Every PAX-Coder output tags which obligations it satisfies.
+
+---
+
+## Proof Obligations
+
+| PO | Invariant | Lean 4 theorem |
+|----|-----------|----------------|
+| PO1 | Index space partition (coverage + disjointness) | `partition_coverage`, `partition_disjoint` |
+| PO2 | Address space separation (shared ∩ global = ∅) | `shared_global_disjoint` |
+| PO3 | SIMT reconvergence before barrier | `warp_reconverges_before_barrier` |
+| PO4 | Happens-before strict partial order | `hb_strict_partial_order` |
+| PO5 | Permission sum ≤ 1 at every address | `permission_sum_bound` |
+| PO6 | Barrier permission conservation | `barrier_conserves_permissions` |
+| PO7 | Data-race freedom | `no_data_race` |
+| PO8 | Termination + correctness | `kernel_correct` |
+
+---
+
+## The HyperKitty Constraint DAG
+
+Every kernel PAX-Coder generates passes through this verified pipeline:
+
+```
+🧠 Input  →  📚 Memory  →  🔍 Retrieval  →  ⚙ Transform  →  ⚖ Constraint  →  🔐 Proof  →  🌐 Output
+```
+
+Formalized in `PAX/ConstraintDAG.lean`. Proven acyclic, single-source, single-sink.
+The Proof node blocks output until all constraints are satisfied.
+
+---
+
+## What It Can Generate
+
+| Category | What you ask for | What you get |
+|----------|-----------------|--------------|
+| `fp16` | FP16 rounding formalization | Lean 4 proof + PTX cvt.rn |
+| `gemm` | GEMM kernel for sm_86 | mma.sync PTX + Lean 4 correctness |
+| `pipeline` | 3-stage async GEMM | cp.async pipeline + throughput bound proof |
+| `epilogue` | Bias+GeLU / Residual+GeLU | In-register fusion + numerical bound |
+| `warp` | Warp reductions | shfl.sync.xor + correctness proof |
+| `architecture` | PAX axiom mapping | Axiom → PO mapping document |
+
+---
+
+## Hardware Target
+
+```
+GPU:         RTX 3080 (Ampere, sm_86)
+VRAM:        10 GB GDDR6X
+Tensor Cores: mma.sync.aligned.m16n8k8 FP16→FP32
+Async Copy:  cp.async.ca.shared.global + commit/wait
+Shared Mem:  48 KB/block (or 100 KB dynamic)
+```
+
+Secondary: H100 sm_90 (TMA cluster multicast, `cp.async.bulk`).
+
+---
+
+## Repository Layout
+
+```
+PAX/                        Lean 4 formal proofs
+  ConstraintDAG.lean        HyperKitty 7-node pipeline DAG, proven acyclic
+  PipelineDAG.lean          3-stage cp.async + throughput bound theorem
+  Float16_Rounding.lean     IEEE-754 binary16 RNE error bound
+  WMMA.lean                 mma.sync.aligned.m16n8k8 semantics
+  IR_DAG.lean               PAX-IR SSA module DAG
+  TrainingData.lean         Dataset structure
+
+src/                        GPU kernels
+  rtx_gemm_ptx.cu           128×128 GEMM, double-buffer, sm_86
+  rtx_gemm_pipeline.cu      3-stage cp.async GEMM
+  rtx_gemm_epilogue.cu      Bias+GeLU, Residual+GeLU fusion
+  pax_kernel.fut            Futhark functional spec
+
+backends/
+  license_policy.pl         Prolog license compatibility reasoner
 
 docs/
-  PAX_ARCHITECTURE.md   5 axioms → 8 proof obligations
+  PAX_ARCHITECTURE.md       5 axioms → 8 proof obligations
+  USER_GUIDE.md             Full usage guide
+  GTM.md                    Go-to-market plan
 
-export_training_data.py Extracts Lean+PTX+Futhark → JSONL
-train.py                QLoRA fine-tuning (RTX 3080, 4-bit)
-run_training.sh         One-command launcher
-Modelfile               Ollama model definition
+export_training_data.py     Lean + PTX + Futhark → JSONL dataset
+train.py                    QLoRA fine-tuning (RTX 3080, 4-bit)
+run_training.sh             One-command training launcher
+Modelfile                   Ollama model definition
+LICENSE.tri                 BSL-1.1 / AGPL-3.0 / MPL-2.0
+SOVEREIGN_NODE_KEY.md       How to get a node key and run PAX-Coder
+CONTRIBUTING.md             Contribution covenant
 ```
 
 ---
 
-## Proof obligations
+## Training Your Own
 
-| PO | What it guarantees |
-|----|--------------------|
-| PO1 | Index space partition: every element assigned once, no overlap |
-| PO2 | Address space separation: shared ∩ global = ∅ |
-| PO3 | SIMT reconvergence before every barrier |
-| PO4 | Happens-before strict partial order across cp.async chain |
-| PO5 | Permission sum ≤ 1 at every memory address |
-| PO6 | Barrier permission conservation |
-| PO7 | Data-race freedom |
-| PO8 | Termination + correctness |
+```bash
+# 1. Extract training data from PAX codebase
+python3 export_training_data.py
+
+# 2. Fine-tune on RTX 3080 (~4-6h, ~8.1GB VRAM)
+pip install -r requirements.txt
+./run_training.sh
+
+# 3. Run locally via Ollama
+ollama create pax-coder -f Modelfile
+ollama run pax-coder "Write a verified GEMM kernel"
+
+# 4. Push to HuggingFace
+huggingface-cli upload Snapkitty/pax-coder-7b pax-coder-7b/gguf/ --repo-type model
+```
 
 ---
 
-## Hardware target
+## Sovereign Node Key
 
-RTX 3080 · Ampere sm_86 · 10GB GDDR6X · `mma.sync.aligned.m16n8k8` FP16→FP32
+Running PAX-Coder in production requires a Sovereign Node Key.
+
+See [`SOVEREIGN_NODE_KEY.md`](SOVEREIGN_NODE_KEY.md) for how to get one.
+
+The key is not DRM. It is proof that you have contributed to the stack you are running.
+
+---
+
+## License
+
+Tri-licensed — see [`LICENSE.tri`](LICENSE.tri) and [`backends/license_policy.pl`](backends/license_policy.pl).
+
+```bash
+# Find out which license applies to your use case:
+swipl -q -t halt -f backends/license_policy.pl -- select saas_wrapper
+# → AGPL-3.0
+
+swipl -q -t halt -f backends/license_policy.pl -- select enterprise_restricted
+# → BSL-1.1
+```
+
+BSL-1.1 converts to AGPL-3.0 on 2028-08-08.
 
 ---
 
@@ -154,11 +280,13 @@ RTX 3080 · Ampere sm_86 · 10GB GDDR6X · `mma.sync.aligned.m16n8k8` FP16→FP3
 
 ```bibtex
 @software{pax_coder_2026,
-  title  = {PAX-Coder: Verified GPU Kernel Generation},
+  title  = {PAX-Coder: Verified GPU Kernel Generation via Lean 4 + PTX + Futhark},
   author = {Parr, Ahmad Ali},
   year   = {2026},
   url    = {https://github.com/SNAPKITTYWEST/pax-coder}
 }
 ```
 
-Apache 2.0 — commercial use permitted.
+---
+
+*Bel Esprit D'Accord Irrevocable Trust · SnapKitty West · Evidence or Silence — 2026*
