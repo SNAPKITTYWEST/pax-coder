@@ -23,9 +23,13 @@ Ampere `sm_86`, with RTX 3080 as the primary engineering target.
 
 ## 🔐 Access & Provisioning
 
-**PAX-Coder repository is publicly available.** Anyone can clone and verify integrity.
+**PAX-Coder is a commercially gated system.**
 
-**Protected operations require authorization.** To perform protected operations (signing releases, production deployment) and receive a provisioned Sovereign Node:
+**Repository:** Publicly available on GitHub. Anyone can clone for verification/testing/education.
+
+**Production Authorization:** Contact-controlled. Requires approval and operator-signed provisioning. Not automatic. Not self-service. Not free-for-all.
+
+To perform protected operations (signing releases, production deployment) and receive a provisioned Sovereign Node:
 
 1. **Contact:** Submit access request at [CONTACT.md](CONTACT.md)
 2. **Select tier:** Choose the appropriate plan
@@ -47,7 +51,7 @@ Ampere `sm_86`, with RTX 3080 as the primary engineering target.
 
 ## ✅ Clone Verification
 
-**After receiving authorized clone access, verify your copy is authentic:**
+**Anyone can clone. Verify your copy is authentic:**
 
 ```bash
 ./scripts/verify-clone
@@ -208,7 +212,26 @@ Unauthorized nodes cannot:
 
 ✗ **Without authorization record** — Node identity alone cannot authorize operations  
 ✗ **Legal ownership** — No embedded legal claims  
-✗ **Work quality** — Only proves authorization and existence
+✗ **Work quality** — Only proves authorization and existence  
+
+### Critical: What Self-Generated Keys Do NOT Do
+
+**Important clarification:** A Node Key you generate locally does NOT:
+
+- ❌ Automatically grant production authorization
+- ❌ Bypass the contact → approval → provisioning flow
+- ❌ Authenticate you to PAX-Coder
+- ❌ Create production credentials
+- ❌ Replace operator-issued authorization
+
+**Production authorization requires:**
+
+1. **Contact** — Reach PAX-Coder (required)
+2. **Approval** — Authority must review and approve (required)
+3. **Provisioning** — Authority signs authorization record (required)
+4. **Valid scope** — Operation must be within authorized scope
+
+A self-generated key is a LOCAL NODE IDENTITY. It is NOT production authorization. Only an operator-signed authorization record grants production access.
 
 ### Security Documentation
 
