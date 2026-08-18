@@ -1,0 +1,13 @@
+# Language detection
+# Hide shell scripts from GitHub language statistics
+*.sh linguist-detectable=false
+scripts/ linguist-detectable=false
+
+# Treat documentation as documentation
+*.md linguist-documentation
+docs/ linguist-documentation
+
+# Primary languages: Lean, CUDA, Python
+*.lean linguist-language=Lean
+*.cu linguist-language=CUDA
+*.py linguist-language=Python
