@@ -19,6 +19,45 @@ standard:
 The repository supports work on proof-carrying CUDA generation for NVIDIA
 Ampere `sm_86`, with RTX 3080 as the primary engineering target.
 
+---
+
+## 🔐 Sovereign Node Key & Security
+
+Every PAX-Coder output is **cryptographically signed** with a Sovereign Node Key — an Ed25519 keypair that commits to:
+- ✅ Repository integrity (SHA-256 commitment of all tracked files)
+- ✅ Timestamp (git commit + UTC time)
+- ✅ Authenticity (your Ed25519 public key)
+- ✅ Non-repudiation (proof of signing)
+
+### Quick Start: Generate Your Node Key
+
+```bash
+cd sovereign
+./generate_node_key.sh
+./verify_node_key.sh
+```
+
+This creates:
+- `node.json` — Public identity
+- `prior_art.json` — Timestamp record
+- `.node_sk` — Private key (local only, never committed)
+
+### Security Documentation
+
+📖 **[SOVEREIGN_NODE.md](SOVEREIGN_NODE.md)** — What the node key proves and what it doesn't  
+🔒 **[SECURITY.md](SECURITY.md)** — Security policy, incident response, dependency audits  
+📚 **[sovereign/README.md](sovereign/README.md)** — Complete user guide + verification procedures  
+
+### How to Verify Someone's Output
+
+1. Get their public key from `node.json`
+2. Check the git commit and timestamp in `prior_art.json`
+3. Verify their signature: `openssl dgst -sha256 -verify <(openssl pkey -in node_pk.pem -pubin -outform DER) -signature output.sig output.ptx`
+
+**Important:** This system proves integrity and timestamp, not authority. See [SOVEREIGN_NODE.md](SOVEREIGN_NODE.md) for the full security model.
+
+---
+
 ## Public and Internal Model Boundary
 
 PAX-Coder is the public-facing model package for this program. It is the
