@@ -2,7 +2,7 @@
   "project": "PAX-Coder",
   "repository": "SNAPKITTYWEST/pax-coder",
   "release_version": "1.0.0",
-  "git_commit": "1719378a3cd9b4e87647a74f2084dbc7057c775d",
+  "git_commit": "9a78595ffbf28fe36cde1368306bad1a87afc3e4",
   "node_id": "pax-coder-1787047913",
   "node_public_key_hex": "302a300506032b65700321006c66408df5999d5a52dff4d1c153d7a2178fb5af4bb2752fb873207515dcc249",
   "release_timestamp_utc": "2026-08-18T10:12:00Z",
@@ -13,7 +13,7 @@
   "prior_art_record": {
     "artifact": "PAX-Coder",
     "repository": "SNAPKITTYWEST/pax-coder",
-    "git_commit": "1719378a3cd9b4e87647a74f2084dbc7057c775d",
+    "git_commit": "9a78595ffbf28fe36cde1368306bad1a87afc3e4",
     "release_version": "1.0.0",
     "repository_manifest_sha256": "e19987bc8ef89b4892f18f23ee337edf097f74506ef1a5e61c58188f97b7751e",
     "node_id": "pax-coder-1787047913",
