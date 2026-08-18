@@ -34,6 +34,18 @@ datasets:
 
 ---
 
+## Quick Navigation
+
+👉 **New here?** Start with [ABOUT.md](ABOUT.md) — high-level overview of what PAX-Coder does.
+
+👉 **Ready to use it?** Jump to [User Guide](#user-guide) below — step-by-step instructions.
+
+👉 **Deep dive?** See [PAX_ARCHITECTURE.md](docs/PAX_ARCHITECTURE.md) (5 axioms + 8 proof obligations).
+
+👉 **Commercial use?** See [PAX_CODER_README.md](PAX_CODER_README.md) (GGUF, CUDA, GEMM integration).
+
+---
+
 ## The Problem
 
 Every GPU kernel in production today is written on trust. The author ran some benchmarks, it matched cuBLAS within 5%, and it shipped. Nobody checked whether the memory model is race-free. Nobody proved the pipeline overlap bound is real and not just an artifact of the benchmark configuration. Nobody verified that FP16 rounding actually stays within 0.5 ulp on all inputs.
@@ -87,6 +99,173 @@ Arch: sm_86 | Category: gemm | Constraints: [PO1 PO3 PO5 PO8]
 inputs = tokenizer(prompt, return_tensors="pt")
 out    = model.generate(**inputs, max_new_tokens=1024, temperature=0.1)
 print(tokenizer.decode(out[0]))
+```
+
+---
+
+## User Guide: How to Use PAX-Coder
+
+### Step 1: Choose Your Entry Point
+
+You have three options. Pick the one that matches your setup.
+
+#### Option A: Ollama (Easiest — 30 seconds)
+If you have [Ollama](https://ollama.ai) installed:
+```bash
+ollama run Snapkitty/pax-coder "Write a verified 3-stage async GEMM kernel for RTX 3080 with Bias+GeLU fusion"
+```
+Ollama handles model download, quantization, and inference. No GPU drivers to configure.
+
+#### Option B: Python / HuggingFace (Flexible — 3 minutes)
+```bash
+pip install transformers torch
+```
+```python
+from transformers import AutoModelForCausalLM, AutoTokenizer
+
+model     = AutoModelForCausalLM.from_pretrained("Snapkitty/pax-coder-7b")
+tokenizer = AutoTokenizer.from_pretrained("Snapkitty/pax-coder-7b")
+
+prompt = """### Instruction:
+Write a verified FP16 GEMM kernel for RTX 3080 sm_86 using mma.sync.aligned.m16n8k8.
+Include a Lean 4 proof that memory access pattern is race-free.
+
+### Context:
+Arch: sm_86 | Category: gemm | Constraints: [PO1 PO3 PO5 PO8]
+
+### Response:
+"""
+
+inputs  = tokenizer(prompt, return_tensors="pt").to("cuda")
+outputs = model.generate(**inputs, max_new_tokens=1024, temperature=0.1)
+print(tokenizer.decode(outputs[0]))
+```
+
+#### Option C: Local Fine-Tuning (DIY — 4-6 hours)
+Train your own version on your GPU:
+```bash
+pip install -r requirements.txt
+python3 export_training_data.py  # Extract Lean + PTX + Futhark data
+./run_training.sh                 # QLoRA fine-tune (requires RTX 3080+)
+ollama create pax-coder -f Modelfile
+ollama run pax-coder "Your prompt here"
+```
+
+### Step 2: Write Your Prompt
+
+Good prompts follow this structure:
+
+```
+### Instruction:
+[What do you want?]
+
+### Context:
+Arch: [sm_86|sm_90] | Category: [gemm|fp16|pipeline|epilogue|warp|architecture] | Constraints: [PO# PO# ...]
+
+### Response:
+```
+
+**Instruction examples:**
+- "Write a verified FP16 GEMM kernel for RTX 3080"
+- "Prove that IEEE-754 binary16 rounding error is ≤ 0.5 ulp"
+- "Generate a 3-stage async copy pipeline with throughput bound proof"
+- "Implement warp reductions using shfl.sync with correctness proof"
+
+**Categories:**
+- `fp16` — Floating-point proofs and conversions
+- `gemm` — Matrix multiply kernels
+- `pipeline` — Async copy pipelines with bounds
+- `epilogue` — Bias, GeLU, Residual fusion
+- `warp` — Warp reductions and primitives
+- `architecture` — Axiom mappings
+
+**Proof obligations (Constraints):**
+- `PO1` — Index space partition
+- `PO2` — Address space separation
+- `PO3` — SIMT reconvergence
+- `PO4` — Happens-before order
+- `PO5` — Permission bounds
+- `PO6` — Barrier conservation
+- `PO7` — Data-race freedom
+- `PO8` — Termination + correctness
+
+### Step 3: Read the Output
+
+PAX-Coder returns four things:
+
+1. **Lean 4 proof block** — Machine-checked theorem
+   ```lean4
+   theorem kernel_correct (threads : Finset ℕ) :
+       ∀ i ∈ threads, invariant i := by ...
+   ```
+   Copy this into your proof checklist.
+
+2. **PTX assembly block** — GPU code for sm_86
+   ```ptx
+   .target sm_86
+   .entry kernel_name(...) {
+       ...
+       mma.sync.aligned.m16n8k8.f32.f16 ...
+   }
+   ```
+   Use this directly with `nvcc` or `ptxas`.
+
+3. **Futhark spec block** — Functional reference
+   ```futhark
+   def gemm (m : i32) (n : i32) (k : i32) ...
+   ```
+   Run this through `futhark opt` to verify semantics.
+
+4. **Certificate** — Which proof obligations this satisfies
+   ```
+   [PO1: Index space] ✓ [PO3: SIMT] ✓ [PO8: Correct] ✓
+   ```
+
+### Step 4: Integrate Into Your Project
+
+1. Save the Lean 4 proof to `proofs/my_kernel.lean`
+2. Save the PTX assembly to `kernels/my_kernel.ptx`
+3. Save the Futhark spec to `specs/my_kernel.fut`
+4. Run: `lean --version && lean proofs/my_kernel.lean` (should succeed with zero errors)
+5. Compile PTX: `ptxas -arch sm_86 -o my_kernel.cubin kernels/my_kernel.ptx`
+6. Load in your host code and call the kernel
+
+### Step 5: Verify Correctness
+
+To independently verify the proof, install Lean 4:
+```bash
+# macOS
+brew install elan-init
+
+# Linux
+curl https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh -sSf | sh
+
+# Then:
+lean --version
+cd PAX/
+lean proofs/my_kernel.lean
+```
+
+If it compiles with **no `sorry` placeholders**, the kernel is proven correct.
+
+### Common Questions
+
+**Q: Do I need CUDA installed?**
+A: Not for generation. To run the kernels, yes, you need CUDA 12.4+ and a compatible GPU (RTX 3080, RTX 4090).
+
+**Q: Can I modify the generated code?**
+A: Yes, but then the proof no longer applies. The proof is tied to the exact kernel. Modifications require re-proving.
+
+**Q: What if my prompt is too vague?**
+A: PAX-Coder will ask clarifying questions. Be specific about architecture, category, and constraints.
+
+**Q: Can I use this in production?**
+A: Yes, with a Sovereign Node Key. See [`SOVEREIGN_NODE_KEY.md`](SOVEREIGN_NODE_KEY.md).
+
+**Q: What license applies to kernels I generate?**
+A: Depends on your use case. Use the license policy reasoner:
+```bash
+swipl -q -t halt -f backends/license_policy.pl -- select your_use_case
 ```
 
 ---
