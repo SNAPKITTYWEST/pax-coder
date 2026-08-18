@@ -2,14 +2,40 @@
 # PAX-Coder Official Release Signing
 # Generates canonical manifest + signs with Sovereign Node Key
 # Output: release.json (publishable on GitHub)
+#
+# PROTECTED OPERATION: Requires authorization capability
+# This operation is gated via ADR-0009
 
 set -e
 
 SOVEREIGN_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(dirname "$SOVEREIGN_DIR")"
+SCRIPTS_DIR="$REPO_ROOT/scripts"
 RELEASE_VERSION="${1:-1.0.0}"
 CREATED_AT=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
 GIT_COMMIT=$(cd "$REPO_ROOT" && git rev-parse HEAD)
+
+# ============================================================================
+# AUTHORIZATION GATE (ADR-0009)
+# ============================================================================
+
+echo "[GATE] Checking authorization for release signing..."
+echo ""
+
+if ! "$SCRIPTS_DIR/pax-coder-gate" > /tmp/pax-gate-check.txt 2>&1; then
+  echo "AUTHORIZATION DENIED"
+  echo ""
+  cat /tmp/pax-gate-check.txt
+  rm -f /tmp/pax-gate-check.txt
+  exit 2
+fi
+
+rm -f /tmp/pax-gate-check.txt
+echo ""
+
+# ============================================================================
+# PROTECTED EXECUTION AUTHORIZED — PROCEED
+# ============================================================================
 
 # Verify private key exists
 if [ ! -f "$SOVEREIGN_DIR/.node_sk" ]; then

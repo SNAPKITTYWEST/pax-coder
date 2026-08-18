@@ -1,11 +1,25 @@
 #!/bin/bash
-# Sovereign Node Key Generator
-# Generates Ed25519 keypair + public identity manifest + repository commitment
+# Sovereign Node Identity Generator
+#
+# Creates a node IDENTITY REQUEST (not an authorized credential).
+# This is PUBLIC — does not require authorization.
+#
+# The identity created here is:
+#   - UNREGISTERED (no provision yet)
+#   - UNAUTHRIZED (not provisioned by PAX-Coder authority)
+#
+# To become AUTHORIZED for protected execution, the node must:
+#   1. Request provisioning from the authority
+#   2. Receive a signed authorization capability
+#   3. Pass the capability to protected operations
+#
+# This script creates the identity. It does NOT auto-authorize.
 
 set -e
 
 SOVEREIGN_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-REPO_ROOT="$(dirname "$SOVEREIGN_DIR")"
+REPO_ROOT="$(dirname "$SOVEREIGN_DIR")")
+
 NODE_ID="pax-coder-$(date +%s)"
 CREATED_AT=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
 GIT_COMMIT=$(cd "$REPO_ROOT" && git rev-parse HEAD)
