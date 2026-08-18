@@ -26,6 +26,8 @@ sovereign/*_sk
 sovereign/*_sk.*
 sovereign/*/.*key*
 sovereign/*/*key*
+# Allow public keys, deny private keys
+!sovereign/node_pk.pem
 *.pem
 .key
 *.key
