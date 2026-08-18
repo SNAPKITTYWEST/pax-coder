@@ -63,20 +63,17 @@ To perform protected operations (signing releases, production deployment) and re
 
 ---
 
-## ✅ Authorization & Integrity Verification
+## ✅ Authorization Gate
 
-**After authorization, verify your clone is authentic:**
+**Clone authenticates automatically:**
 
-```bash
-# Verify integrity (cryptographic proof of authenticity)
-./scripts/verify-clone
+When you clone with your authorized Sovereign Node Key, the gate verifies:
+- ✅ Repository integrity (cryptographic signature)
+- ✅ Node authorization status (ACTIVE, not REQUESTED/REVOKED/EXPIRED)
+- ✅ Authorization scope (protected-execution)
+- ✅ Commercial agreement binding
 
-# Verify authorization (check your node credential)
-./scripts/verify-node-authorization
-
-# Verify gate status
-./scripts/pax-coder-gate
-```
+No manual verification needed. The gate enforces all checks at clone time.
 
 **Pricing & Tiers:**
 
