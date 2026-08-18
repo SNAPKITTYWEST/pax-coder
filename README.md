@@ -202,7 +202,7 @@ Without valid node authorization, protected execution is denied with an explicit
 2. Check the git commit and timestamp in `prior_art.json`
 3. Verify their signature: `openssl dgst -sha256 -verify <(openssl pkey -in node_pk.pem -pubin -outform DER) -signature output.sig output.ptx`
 
-**Important:** This system proves integrity and timestamp, not authority. See [SOVEREIGN_NODE.md](SOVEREIGN_NODE.md) for the full security model.
+**Important:** Sovereign Node Keys provide cryptographic identity, integrity, timestamp proof, AND authorization. Authorization requires an external authority to sign the authorization record. See [SOVEREIGN_NODE.md](SOVEREIGN_NODE.md) for the full security model and [sovereign/README.md](sovereign/README.md) for provisioning details.
 
 ---
 
