@@ -36,9 +36,9 @@ Ampere `sm_86`, with RTX 3080 as the primary engineering target.
 **Pricing (all require approval):**
 
 - **Community/Contributor:** $0 after approval (open-source/research use only)
-- **Individual:** $250–$500 (per provisioned node, one-time)
-- **Commercial Team:** $12,000–$25,000/year (unlimited nodes)
-- **Enterprise:** $50,000–$150,000+/year (custom deployment, audits)
+- **Individual Node Key:** $250–$500 (per provisioned production node, one-time) — Production authorization credential for one workstation
+- **Commercial Team:** $12,000–$25,000/year (unlimited internal nodes) — Unlimited production nodes within commercial scope
+- **Enterprise:** $50,000–$150,000+/year (custom deployment, audits, white-label)
 
 📖 [Full Pricing & Plans](PRICING.md)  
 📞 [Request Access](CONTACT.md)
@@ -149,12 +149,26 @@ PAX-Coder reviews your request and approves or denies based on use case and tier
 - Individual: $250–$500 per provisioned node
 - Commercial/Enterprise: Per tier pricing
 
-**Step 5: Node Provisioning + Authorization**
+**Step 5: Node Provisioning + Production Authorization**
 
-After approval (and payment if required), you receive:
-- Provisioned Sovereign Node keypair (node_sk, node_pk.pem) — Your cryptographic identity
-- node.json — Public node metadata
-- authorization.json — Authority-signed authorization record proving the node is authorized
+After approval (and payment if required), you receive a provisioned production-authorized node:
+- **node_sk** (private key) — Local workstation credential (never shared)
+- **node_pk.pem** (public key) — Your node's cryptographic identity
+- **node.json** — Public node metadata
+- **authorization.json** — Operator-signed production authorization record (what authorizes your node for protected operations)
+
+### What Node Provisioning Grants
+
+When you receive a provisioned Node Key:
+
+- ✓ **Production Authorization** — Your node is authorized for protected operations
+- ✓ **Signing Rights** — You can sign official releases with your node
+- ✓ **Deployment Rights** — You can deploy kernels authorized under your tier
+- ✓ **Scope** — The authorization specifies what you can do (e.g., "protected-execution")
+- ✓ **Revocation** — Your node can be revoked if terms are violated
+- ✓ **Expiration** — Your authorization is time-bound (varies by tier)
+
+Payment enables provisioning, but provisioning creates authorization.
 
 ### Authorized Execution (With Provisioned Node)
 
@@ -171,7 +185,13 @@ The gate verifies:
 3. ✓ Authorization has not expired
 4. ✓ Protected operation is permitted for this node's scope
 
-Without valid node authorization, protected execution is denied with an explicit error.
+**Without valid node authorization, protected execution is denied with an explicit error.**
+
+Unauthorized nodes cannot:
+- ✗ Sign production releases
+- ✗ Deploy production kernels
+- ✗ Claim production authorization
+- ✗ Bypass the authorization gate
 
 ### What Sovereign Node Keys Prove
 

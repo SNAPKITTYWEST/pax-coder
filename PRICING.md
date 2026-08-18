@@ -43,43 +43,60 @@ Commercial usage, production deployment, and provisioned Sovereign Node credenti
 
 ---
 
-### 2. Individual / Node Key
+### 2. Individual / Node Key — Production Authorization Credential
 
 **$250–$500 per node key (one-time)**
 
 **Audience:** Independent developers and small labs
 
-**What's included:**
-- ✅ One provisioned Sovereign Node credential
-- ✅ Ed25519 production signing key
-- ✅ Local production deployment (one workstation)
-- ✅ Release signing capability
-- ✅ Kernel generation for production use
-- ✅ Non-revocable provisioning (unless terms violated)
+**What this tier grants:**
 
-**What's NOT included:**
+A provisioned Sovereign Node Key that authorizes your workstation for production operations.
+
+- ✅ One production-authorized node (one workstation)
+- ✅ Ed25519 cryptographic identity + operator-signed authorization
+- ✅ Authority to sign official releases
+- ✅ Authority to deploy production kernels
+- ✅ Local production execution rights
+- ✅ Provisioning is permanent (non-revocable unless terms violated)
+
+**What this tier does NOT include:**
+- ❌ Commercial licensing (BSL-1.1 applies; separate commercial agreement required)
 - ❌ Commercial redistribution rights
 - ❌ Enterprise support SLA
-- ❌ Multiple nodes (additional node keys available at same price)
+- ❌ Multiple nodes (additional nodes: purchase additional keys at same price)
 - ❌ Custom Lean 4 proof development
+- ❌ Legal claims or warranties
 
-**Process:**
-1. Submit provisioning request (contact form)
-2. Review and approval
-3. Payment processing
-4. Node credential issuance
-5. Activation in your environment
+**Important distinction:**
+- **Payment** enables provisioning review
+- **Approval** grants the right to provision
+- **Provisioning** creates the Sovereign Node Key
+- **Authorization** is operator-signed (cannot be self-created)
+- **Protected operations** require valid authorization
+
+**Provisioning Flow:**
+1. Submit provisioning request (CONTACT.md form)
+2. PAX-Coder reviews request (1–3 business days)
+3. Request approved or denied
+4. Payment processing (if approved)
+5. Node credential generated (node.json, node_pk.pem, .node_sk)
+6. Operator-signs authorization record (authorization.json)
+7. Node activated (authorization status = ACTIVE)
 
 ---
 
-### 3. Commercial Team
+### 3. Commercial Team — Production Authorization + Commercial Licensing
 
 **$12,000–$25,000 per year**
 
 **Audience:** AI startups, HFT shops, cloud GPU laboratories
 
-**What's included:**
-- ✅ Unlimited internal Sovereign Node keys
+**What this tier grants:**
+
+Unlimited production-authorized nodes within your organization, plus commercial licensing rights.
+
+- ✅ Unlimited internal Sovereign Node keys (all provisioned and operator-authorized)
 - ✅ Full commercial licensing
 - ✅ Hardware target support (sm_86, sm_90)
 - ✅ Multiple provisioned nodes
