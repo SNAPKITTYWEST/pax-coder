@@ -1,13 +1,26 @@
-# Language detection
-# Hide shell scripts from GitHub language statistics
-*.sh linguist-detectable=false
-scripts/ linguist-detectable=false
+# Language detection — Hide shell, emphasize core languages
 
-# Treat documentation as documentation
+# Shell scripts: NOT counted in language statistics
+*.sh linguist-detectable=false linguist-generated=true
+scripts/ linguist-detectable=false linguist-generated=true
+sovereign/ linguist-detectable=false linguist-generated=true
+
+# Documentation files
 *.md linguist-documentation
 docs/ linguist-documentation
 
-# Primary languages: Lean, CUDA, Python
+# Primary languages: Lean, CUDA, Python (actual implementation)
 *.lean linguist-language=Lean
 *.cu linguist-language=CUDA
+*.cuh linguist-language=CUDA
+*.ptx linguist-language=CUDA
 *.py linguist-language=Python
+*.fut linguist-language=Futhark
+*.pl linguist-language=Prolog
+
+# Don't count generated/config files
+*.json linguist-generated=true
+*.yaml linguist-generated=true
+*.yml linguist-generated=true
+Makefile linguist-generated=true
+*.toml linguist-generated=true
