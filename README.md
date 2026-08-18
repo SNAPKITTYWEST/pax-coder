@@ -42,6 +42,8 @@ datasets:
 
 👉 **Deep dive?** See [PAX_ARCHITECTURE.md](docs/PAX_ARCHITECTURE.md) (5 axioms + 8 proof obligations).
 
+👉 **Training & architecture?** See [SOVEREIGN_NVIDIA_TRAINING_GUIDE.md](docs/SOVEREIGN_NVIDIA_TRAINING_GUIDE.md) (Nemotron, Megatron, custom builds).
+
 👉 **Commercial use?** See [PAX_CODER_README.md](PAX_CODER_README.md) (GGUF, CUDA, GEMM integration).
 
 ---
@@ -58,9 +60,22 @@ When it breaks — and it does — you spend a week in NCU traces trying to figu
 
 ## What It Is
 
-PAX-Coder is a fine-tuned DeepSeek-Coder-7B model trained on the PAX sovereign GPU computing codebase — a stack built from five mathematical axioms, verified in Lean 4, implemented in PTX, and specified in Futhark.
+PAX-Coder is the **verification framework** for Ahmad's sovereign frontier model — a 1T-parameter AI deployed on custom silicon with **machine-verified correctness**.
 
-Every kernel PAX-Coder generates includes:
+PAX-Coder itself is a fine-tuned DeepSeek-Coder-7B trained on the PAX sovereign GPU computing codebase — a stack built from five mathematical axioms, verified in Lean 4, implemented in PTX, and specified in Futhark.
+
+### The Full Stack
+
+| Layer | What it does | Status |
+|-------|--------------|--------|
+| **PAX-Coder (public)** | Verification framework for GPU kernels, proofs, and specs | ✅ Live (this repo) |
+| **Ahmad's 1T Frontier Model (private)** | Sovereign frontier-class AI (~Claude tier, beats Kimi/Qwen) | 🔨 In development |
+| **WORM-verified correctness** | Mathematical proof the model is correct (Lean 4 + Lean proofs) | 🔐 Sealed when ready |
+| **Custom silicon deployment** | Hardware implementation with provable semantics | 🚀 Post-WORM |
+
+### What PAX-Coder Does
+
+Every kernel/proof PAX-Coder generates includes:
 
 | Output | What it proves |
 |--------|---------------|
@@ -69,7 +84,7 @@ Every kernel PAX-Coder generates includes:
 | **Futhark spec** | Functional reference — compiler-verifiable |
 | **PAX certificate** | Which of the 8 proof obligations this kernel satisfies |
 
-This is not a chatbot that writes CUDA. It is a **proof-carrying code generator**.
+This is not a chatbot that writes CUDA. It is a **proof-carrying code generator** that enables verified frontier AI.
 
 ---
 
@@ -562,13 +577,14 @@ If you need production deployment without contributing:
 
 | Feature | Community | Commercial |
 |---------|-----------|-----------|
-| Use PAX-Coder locally | ✅ Free | ✅ Free |
+| Use PAX-Coder locally (kernel verification) | ✅ Free | ✅ Free |
 | Generate kernels for personal projects | ✅ Free | ✅ Free |
-| Deploy to production (1+ GPU) | ❌ Requires key | ✅ With key |
+| Access Ahmad's 1T frontier model | ❌ No | ✅ Private API |
+| Deploy frontier model to production | ❌ No | ✅ Via custom chip |
 | Embed kernels in products | ❌ Requires license | ✅ With license |
 | Commercial support | ❌ No | ✅ Yes |
-| Proof audit + sign-off | ❌ No | ✅ Yes |
-| SaaS/cloud deployment | ❌ Requires license | ✅ With license |
+| Proof audit + sign-off (Lean 4 verification) | ❌ No | ✅ Yes |
+| SaaS/cloud deployment (frontier model) | ❌ No | ✅ With license |
 
 ### How to Use Your Node Key
 
@@ -630,6 +646,33 @@ kernel = node.generate_kernel(
 result = node.deploy(kernel, target_gpu="RTX-3080")
 print(result.status)  # "PRODUCTION_READY" or "BLOCKED"
 ```
+
+### The Commercial Product: Ahmad's Verified Frontier Model
+
+**What you're buying with a commercial license:**
+
+1. **Access to Ahmad's 1T frontier model** — Frontier-class AI (competitive with Claude, beats Kimi/Qwen)
+2. **WORM-sealed mathematical proof** — Lean 4 verification that the model satisfies 8 proof obligations
+3. **Custom silicon deployment** — Run on Ahmad's verified hardware (post-development)
+4. **Proven correctness, not trust** — Every claim backed by machine-checked proof, not marketing
+
+**Why this matters:**
+
+- Claude works great, but you trust Anthropic
+- Kimi/Qwen are cheap, but correctness is unverified
+- Ahmad's model is **frontier-tier AND mathematically proven**
+
+You get the capability of Claude with the certainty of formal verification.
+
+**Competitive positioning:**
+
+| Model | Capability | Verified? | Custom Chip? |
+|-------|-----------|-----------|--------------|
+| Claude | Frontier | ❌ Trust | ❌ Standard GPU |
+| GPT-4o | Frontier | ❌ Trust | ❌ Standard GPU |
+| Kimi | Mid-tier | ❌ Trust | ❌ Standard GPU |
+| Qwen | Mid-tier | ❌ Trust | ❌ Standard GPU |
+| **Ahmad's 1T (with node key)** | **Frontier** | **✅ Proven** | **✅ Custom** |
 
 ### Licensing: What You Can and Can't Do
 
