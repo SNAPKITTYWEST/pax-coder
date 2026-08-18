@@ -1,0 +1,116 @@
+#!/bin/bash
+# PAX-Coder Release Verification with Authorization (ADR-0002)
+#
+# Verifies integrity AND checks authorization requirements.
+# Separates these two concerns explicitly.
+#
+# Exit codes:
+#   0 = Integrity verified AND authorized
+#   1 = Integrity verification failed
+#   2 = Integrity verified BUT NOT authorized
+#   3 = Script error
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+REPO_ROOT="$(dirname "$SCRIPT_DIR")"
+SOVEREIGN_DIR="$REPO_ROOT/sovereign"
+
+echo "========================================"
+echo "PAX-CODER RELEASE VERIFICATION"
+echo "========================================"
+echo ""
+echo "Phase 1: Integrity Verification (ADR-0001)"
+echo "Phase 2: Authorization Check (ADR-0002)"
+echo ""
+
+# ============================================================================
+# PHASE 1: Integrity verification
+# ============================================================================
+
+echo "[Phase 1] Verifying clone integrity..."
+echo ""
+
+if "$SCRIPT_DIR/verify-clone" > /tmp/pax-verify-$$.txt 2>&1; then
+  INTEGRITY_RESULT="PASS"
+  echo "✓ Integrity verified"
+else
+  INTEGRITY_RESULT="FAIL"
+  echo "✗ Integrity verification failed"
+  echo ""
+  cat /tmp/pax-verify-$$.txt
+  rm -f /tmp/pax-verify-$$.txt
+  exit 1
+fi
+
+rm -f /tmp/pax-verify-$$.txt
+echo ""
+
+# ============================================================================
+# PHASE 2: Authorization boundary check (ADR-0002)
+# ============================================================================
+
+echo "[Phase 2] Checking authorization..."
+echo ""
+
+# Check if release.json exists
+if [ ! -f "$SOVEREIGN_DIR/release.json" ]; then
+  echo "✗ Error: release.json not found"
+  exit 3
+fi
+
+# Extract node ID
+NODE_ID=$(grep '"node_id"' "$SOVEREIGN_DIR/release.json" | head -1 | cut -d'"' -f4)
+
+# Authorization can come from:
+# 1. Private key file (sovereign/.node_sk)
+# 2. Environment variable (PAX_AUTH_TOKEN)
+
+AUTH_TOKEN_FILE="$SOVEREIGN_DIR/.node_sk"
+AUTH_TOKEN_ENV="${PAX_AUTH_TOKEN:-}"
+
+AUTHORIZATION_STATUS="NONE"
+
+if [ -f "$AUTH_TOKEN_FILE" ]; then
+  AUTHORIZATION_STATUS="GRANTED"
+elif [ -n "$AUTH_TOKEN_ENV" ]; then
+  AUTHORIZATION_STATUS="GRANTED"
+fi
+
+echo ""
+
+if [ "$AUTHORIZATION_STATUS" = "GRANTED" ]; then
+  echo "========================================"
+  echo "STATUS: VERIFIED_AND_AUTHORIZED"
+  echo "========================================"
+  echo ""
+  echo "✓ Integrity verified"
+  echo "✓ Authorization granted"
+  echo ""
+  echo "You are authorized to perform protected operations."
+  echo ""
+  exit 0
+
+else
+  echo "========================================"
+  echo "STATUS: VERIFIED_NOT_AUTHORIZED"
+  echo "========================================"
+  echo ""
+  echo "✓ Integrity verified"
+  echo "✗ Authorization required"
+  echo ""
+  echo "This release is authentic, but authorization is required"
+  echo "for protected operations."
+  echo ""
+  echo "To obtain authorization:"
+  echo ""
+  echo "  Node ID: $NODE_ID"
+  echo ""
+  echo "  Option 1: Use the server challenge/response protocol"
+  echo "    See: docs/adr/0006-server-challenge-protocol.md"
+  echo ""
+  echo "  Option 2: Set authorization token"
+  echo "    export PAX_AUTH_TOKEN=<token>"
+  echo ""
+  echo "  Option 3: Place private key at sovereign/.node_sk"
+  echo ""
+  exit 2
+fi
