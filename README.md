@@ -437,6 +437,62 @@ Institutional distinction:
 - A commercial deployment should satisfy both the selected license path and the
   applicable node-key/seal policy.
 
+## Commercial Access and Sovereign Node Keys
+
+### What Is a Sovereign Node Key?
+
+A **Sovereign Node Key** is proof that you have contributed to the PAX stack or
+received commercial authorization. It is not DRM; it is membership and
+production attribution. Running PAX-Coder in production requires one.
+
+### How to Get a Node Key
+
+**Option 1: Contribute to the Stack (Recommended)**
+
+1. Fork the repository: [SNAPKITTYWEST/pax-coder](https://github.com/SNAPKITTYWEST/pax-coder).
+2. Build something useful: a kernel, proof, integration, documentation update,
+   test case, deployment adapter, or verification improvement.
+3. Submit a pull request.
+4. On merge, you earn a node key for that contribution.
+5. Email `license@collectivekitty.com` with:
+   - your GitHub username,
+   - merged pull request link or links,
+   - intended use case: research, commercial, or personal.
+6. Receive your node key: Ed25519 public key registration plus signing
+   certificate.
+
+**Option 2: Commercial License (Direct)**
+
+Email `license@collectivekitty.com` with:
+
+- your organization name,
+- intended deployment scope: internal R&D, SaaS, embedded product, or another
+  production scope,
+- GPU hardware: RTX 3080, RTX 4090, H100, or equivalent target,
+- estimated kernel volume.
+
+After review, approved commercial users receive a commercial node key, license
+terms, and registration path for deployment.
+
+### What Does a Node Key Unlock?
+
+| Feature | Community | Commercial |
+| --- | --- | --- |
+| Use PAX-Coder locally for kernel verification | Free | Free |
+| Generate kernels for personal projects | Free | Free |
+| Deploy to production on one or more GPUs | Requires node key | Included with commercial key |
+| Embed kernels in products | Requires license | Included with commercial license |
+| Commercial support | Not included | Included by agreement |
+| Proof audit and sign-off | Not included | Included by agreement |
+| SaaS or cloud deployment | Requires license | Included with commercial license |
+
+### Questions
+
+- **How to contribute:** see [`CONTRIBUTING.md`](CONTRIBUTING.md).
+- **Node key details:** see [`SOVEREIGN_NODE_KEY.md`](SOVEREIGN_NODE_KEY.md).
+- **Licensing details:** see [`LICENSE.tri`](LICENSE.tri).
+- **Commercial inquiries:** `license@collectivekitty.com`.
+
 ## Commercial and Institutional Use
 
 This project is suitable for:
