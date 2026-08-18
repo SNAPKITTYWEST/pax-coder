@@ -7,43 +7,15 @@
 
 ## Overview
 
-PAX-Coder offers four tiers of access and support.
+PAX-Coder is a commercial product. Production authorization requires contact, approval, and a commercial agreement.
 
-**All access requires approval.** Contact for access request at [CONTACT.md](CONTACT.md).
-
-Commercial usage, production deployment, and provisioned Sovereign Node credentials require the appropriate tier selection.
+**All production access requires approval and commercial terms.** Contact for access request at [CONTACT.md](CONTACT.md).
 
 ---
 
 ## Tiers
 
-### 1. Community / Contributor
-
-**Free**
-
-**Audience:** Open-source developers and researchers
-
-**Access:** Approval required (non-commercial/research use)
-
-**What's included (after approval):**
-- ✅ Repository access
-- ✅ Local kernel generation
-- ✅ Non-commercial testing
-- ✅ Research usage
-
-**What's NOT included:**
-- ❌ Provisioned Sovereign Node credential
-- ❌ Production deployment
-- ❌ Commercial support
-
-**Qualifying usage:**
-- Open-source developers
-- Academic researchers
-- Non-commercial projects
-
----
-
-### 2. Individual / Node Key — Production Authorization Credential
+### 1. Individual / Node Key — Production Authorization Credential
 
 **$250–$500 per node key (one-time)**
 
@@ -86,7 +58,7 @@ A provisioned Sovereign Node Key that authorizes your workstation for production
 
 ---
 
-### 3. Commercial Team — Production Authorization + Commercial Licensing
+### 2. Commercial Team — Production Authorization + Commercial Licensing
 
 **$12,000–$25,000 per year**
 
@@ -120,7 +92,7 @@ Unlimited production-authorized nodes within your organization, plus commercial 
 
 ---
 
-### 4. Enterprise Verification
+### 3. Enterprise Verification
 
 **$50,000–$150,000+ per year**
 
@@ -152,9 +124,7 @@ Unlimited production-authorized nodes within your organization, plus commercial 
 
 ---
 
-## Additional Services
-
-### Proof Audit & Sign-Off
+### 4. Proof Audit & Sign-Off
 
 **$10,000+ per custom kernel**
 
@@ -241,11 +211,10 @@ Include:
 
 **Step 3: Review & Approval**
 
-- Community tier: Automatic approval for qualifying projects
 - Individual tier: 1–3 business day review
 - Commercial/Enterprise: Formal review process
 
-**Step 4: Agreement & Payment**
+**Step 4: Commercial Agreement & Payment**
 
 - Individual: Secure payment link (one-time)
 - Commercial/Enterprise: Formal commercial agreement
@@ -269,7 +238,7 @@ Use your provisioned credential for:
 
 ### Q: Can I access the repository?
 
-**A:** Access requires approval. Contact at [CONTACT.md](CONTACT.md) to request access. Community/research usage is $0 after approval.
+**A:** Repository access is free for verification/testing. Production authorization requires contact, approval, and the applicable commercial tier. See [CONTACT.md](CONTACT.md).
 
 ### Q: Do I get a Sovereign Node automatically?
 

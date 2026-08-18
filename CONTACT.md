@@ -96,10 +96,10 @@ Team Size:
 ```
 Which tier are you interested in?
 
-  [ ] Community / Contributor (Free)
   [ ] Individual / Node Key ($250–$500)
   [ ] Commercial Team ($12,000–$25,000/year)
   [ ] Enterprise Verification ($50,000+/year)
+  [ ] Proof Audit & Sign-Off ($10,000+/kernel)
   [ ] Not sure / Need consultation
 ```
 
@@ -161,8 +161,7 @@ Include all information from the form above.
 - Rejected: Contact with explanation and alternative options
 - On Hold: Request for additional information
 
-### Step 4: Agreement & Payment (Individual/Commercial/Enterprise)
-- Community: No additional steps (approval = active)
+### Step 4: Commercial Agreement & Payment
 - Individual: Secure payment link sent
 - Commercial/Enterprise: Legal review and formal agreement
 
@@ -170,14 +169,15 @@ Include all information from the form above.
 - Individual: Credit card / PayPal / Wire (1–3 days)
 - Commercial/Enterprise: PO / Invoice / Custom terms
 
-### Step 6: Provisioning
+### Step 6: Node Provisioning
 - Node credential created
+- Operator-signed authorization issued
 - Authentication material provided
 - Activation instructions sent
 
 ### Step 7: Activation
 - Configure credential in your environment
-- Begin using PAX-Coder
+- Begin using PAX-Coder with production authorization
 
 **Total time: 3–14 business days (depending on tier)**
 
@@ -280,9 +280,9 @@ Violations may result in:
 
 Examples:
 - Unauthorized redistribution
-- Commercial use of Community tier
 - Sharing credentials with other organizations
 - Use outside provisioning agreement scope
+- Unauthorized production deployment
 
 ---
 

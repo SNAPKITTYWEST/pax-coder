@@ -37,9 +37,8 @@ To perform protected operations (signing releases, production deployment) and re
 4. **Payment (if applicable):** Complete commercial agreement
 5. **Provisioning:** Receive provisioned Sovereign Node + authorization capability
 
-**Pricing (all require approval):**
+**Pricing (all require contact and approval):**
 
-- **Community/Contributor:** $0 after approval (open-source/research use only)
 - **Individual Node Key:** $250–$500 (per provisioned production node, one-time) — Production authorization credential for one workstation
 - **Commercial Team:** $12,000–$25,000/year (unlimited internal nodes) — Unlimited production nodes within commercial scope
 - **Enterprise:** $50,000–$150,000+/year (custom deployment, audits, white-label)
@@ -140,16 +139,15 @@ Public clone includes:
 For production use or protected operations, submit provisioning request at [CONTACT.md](CONTACT.md) with:
 - Your name/organization
 - Intended use case
-- Requested tier (Community, Individual, Commercial, Enterprise)
+- Requested tier (Individual, Commercial, Enterprise)
 - Deployment requirements
 
 **Step 3: Approval**
 
-PAX-Coder reviews your request and approves or denies based on use case and tier.
+PAX-Coder reviews your request based on the commercial terms and approves or denies.
 
-**Step 4: Payment (if applicable)**
+**Step 4: Commercial Agreement & Payment**
 
-- Community: $0 (after approval, for open-source/research)
 - Individual: $250–$500 per provisioned node
 - Commercial/Enterprise: Per tier pricing
 
