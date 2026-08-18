@@ -26,6 +26,14 @@ sovereign/*_sk
 sovereign/*_sk.*
 sovereign/*/.*key*
 sovereign/*/*key*
+
+# Authority Keys — NEVER commit authority private key
+# Authority public key is safe to distribute but kept off-repo
+sovereign/authority_sk.pem
+sovereign/authority_sk.pem.*
+sovereign/authority_pk.pem
+sovereign/authority_pk.pem.*
+
 # Allow public keys, deny private keys
 !sovereign/node_pk.pem
 *.pem

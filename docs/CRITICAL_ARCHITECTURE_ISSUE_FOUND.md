@@ -9,7 +9,9 @@
 
 ## Issue Summary
 
-The implementation uses the **NODE's public key** (`sovereign/node_pk.pem`) as the **AUTHORITY's verification key** for signature verification.
+**The gate currently uses the node identity public key as its authority trust root, collapsing node identity and authority verification. This violates the intended separation of trust domains and makes the authorization architecture unsound until corrected.**
+
+Specifically: The implementation uses `sovereign/node_pk.pem` (the **NODE's public key**) as the **AUTHORITY's verification key**.
 
 This violates the fundamental architectural distinction:
 
@@ -45,21 +47,21 @@ AUTHORITY_PUBLIC_KEY_FILE="$SOVEREIGN_DIR/node_pk.pem"
 
 ---
 
-## Attack Scenario
+## Trust Domain Collapse
 
-**Setup:**
-1. Attacker clones pax-coder repo (gets sovereign/node_pk.pem)
-2. Authority produces real signed authorization using authority private key
-3. Attacker intercepts authorization
-4. Attacker regenerates capability with their own node_pk signature
+**The issue:** Gate validates authority claims against node identity key.
 
-**Result:**
-- Gate runs `openssl pkeyutl -verify -inkey "$AUTHORITY_PUBLIC_KEY_FILE"`
-- But `AUTHORITY_PUBLIC_KEY_FILE` is the **node's** public key (attacker's)
-- Signature verification passes (uses attacker's key, not authority key)
-- Gate grants authorization
+**What this means:**
+- Node cannot forge authority signatures (Ed25519 requires private key)
+- But the trust root is architecturally wrong
+- Authority verification uses node identity, not authority identity
+- Two security domains (node + authority) are conflated into one
 
-**Conclusion:** Authorization boundary is broken.
+**Impact:**
+- Authorization trust chain is unsound
+- Authority is not actually authenticating the authorization
+- Gate cannot distinguish between node signatures and authority signatures
+- Architecture is indefensible in security audit
 
 ---
 

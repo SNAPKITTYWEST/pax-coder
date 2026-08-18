@@ -186,12 +186,17 @@ echo ""
 
 echo "[6/6] Verifying capability signature..."
 
-# Authority public key (Ed25519) - from sovereign/node_pk.pem
-# This is the canonical authority for capability issuance
-AUTHORITY_PUBLIC_KEY_FILE="$SOVEREIGN_DIR/node_pk.pem"
+# Authority public key (Ed25519) - from sovereign/authority_pk.pem
+# This is the canonical authority for capability issuance.
+# CRITICAL: This is the AUTHORITY public key, NOT the NODE public key.
+# The authority private key exists only on the secure authority server.
+# The authority public key is distributed for verification purposes.
+AUTHORITY_PUBLIC_KEY_FILE="$SOVEREIGN_DIR/authority_pk.pem"
 
 if [ ! -f "$AUTHORITY_PUBLIC_KEY_FILE" ]; then
   echo "ERROR: Authority public key not found at $AUTHORITY_PUBLIC_KEY_FILE"
+  echo "This gate cannot verify capabilities without the authority's public key."
+  echo "HINT: Authority public key should be provided during deployment."
   exit 3
 fi
 
@@ -209,7 +214,20 @@ fi
 # Create canonical JSON representation for verification
 # Must be deterministically serialized (sorted keys, no extra whitespace)
 # Same format as used by the capability issuer
-CAPABILITY_CANONICAL=$(echo "$CAPABILITY_JSON" | jq -S -c .)
+if command -v jq &> /dev/null; then
+  CAPABILITY_CANONICAL=$(echo "$CAPABILITY_JSON" | jq -S -c .)
+else
+  # Fallback: use Python for JSON normalization
+  CAPABILITY_CANONICAL=$(python3 -c "
+import json
+import sys
+try:
+  data = json.loads('''$CAPABILITY_JSON''')
+  print(json.dumps(data, sort_keys=True, separators=(',', ':')))
+except:
+  sys.exit(1)
+" 2>/dev/null)
+fi
 
 if [ -z "$CAPABILITY_CANONICAL" ]; then
   echo "ERROR: Failed to parse capability JSON"
