@@ -1,0 +1,20 @@
+{
+  "authorization_id": "auth-pax-coder-1787047913-20260818",
+  "node_id": "pax-coder-1787047913",
+  "node_public_key_hex": "302a300506032b65700321006c66408df5999d5a52dff4d1c153d7a2178fb5af4bb2752fb873207515dcc249",
+  "authorization_status": "ACTIVE",
+  "authorization_scope": "protected-execution",
+  "authorization_tier": "individual",
+  "issued_at_utc": "2026-08-18T10:11:53Z",
+  "expires_at_utc": null,
+  "issued_by_authority": "pax-coder-authority",
+  "authority_signature": "placeholder_pending_authority_implementation",
+  "revocation_status": "ACTIVE",
+  "commercial_agreement_id": "agreement-12345",
+  "metadata": {
+    "deployment_environment": "production",
+    "kernel_signing_capability": true,
+    "release_signing_capability": true,
+    "commercial_usage": true
+  }
+}

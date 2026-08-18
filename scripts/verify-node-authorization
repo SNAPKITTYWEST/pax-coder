@@ -1,0 +1,161 @@
+#!/bin/bash
+# Sovereign Node Authorization Verification
+#
+# Verifies that a node has valid authorization for protected operations.
+#
+# Exit codes:
+#   0 = AUTHORIZED
+#   1 = NOT_AUTHORIZED
+#   2 = INVALID_AUTHORIZATION_RECORD
+#   3 = ERROR
+
+set -e
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+REPO_ROOT="$(dirname "$SCRIPT_DIR")"
+SOVEREIGN_DIR="$REPO_ROOT/sovereign"
+
+# ============================================================================
+# PART 1: LOCATE AUTHORIZATION RECORD
+# ============================================================================
+
+echo "[1/5] Locating authorization record..."
+
+if [ ! -f "$SOVEREIGN_DIR/authorization.json" ]; then
+  echo "ERROR: Authorization record not found"
+  echo "Expected: $SOVEREIGN_DIR/authorization.json"
+  exit 2
+fi
+
+echo "    ✓ Authorization record found"
+
+# ============================================================================
+# PART 2: LOCATE NODE IDENTITY
+# ============================================================================
+
+echo "[2/5] Locating node identity..."
+
+if [ ! -f "$SOVEREIGN_DIR/node.json" ]; then
+  echo "ERROR: Node identity not found"
+  exit 2
+fi
+
+echo "    ✓ Node identity found"
+
+# ============================================================================
+# PART 3: PARSE AND VALIDATE AUTHORIZATION RECORD
+# ============================================================================
+
+echo "[3/5] Parsing authorization record..."
+
+# Extract fields from authorization.json (using grep with better escaping)
+AUTH_ID=$(grep 'authorization_id' "$SOVEREIGN_DIR/authorization.json" | head -1 | sed 's/.*"authorization_id": "\([^"]*\)".*/\1/' || echo "")
+NODE_ID=$(grep 'node_id' "$SOVEREIGN_DIR/authorization.json" | head -1 | sed 's/.*"node_id": "\([^"]*\)".*/\1/' || echo "")
+STATUS=$(grep 'authorization_status' "$SOVEREIGN_DIR/authorization.json" | head -1 | sed 's/.*"authorization_status": "\([^"]*\)".*/\1/' || echo "")
+SCOPE=$(grep 'authorization_scope' "$SOVEREIGN_DIR/authorization.json" | head -1 | sed 's/.*"authorization_scope": "\([^"]*\)".*/\1/' || echo "")
+EXPIRES=$(grep 'expires_at_utc' "$SOVEREIGN_DIR/authorization.json" | head -1 | sed 's/.*"expires_at_utc": \(null\|"[^"]*"\).*/\1/' | tr -d '"' || echo "null")
+REVOKED=$(grep 'revocation_status' "$SOVEREIGN_DIR/authorization.json" | head -1 | sed 's/.*"revocation_status": "\([^"]*\)".*/\1/' || echo "")
+
+if [ -z "$AUTH_ID" ] || [ -z "$NODE_ID" ] || [ -z "$STATUS" ]; then
+  echo "ERROR: Authorization record malformed"
+  exit 2
+fi
+
+echo "    Authorization ID: $AUTH_ID"
+echo "    Node ID: $NODE_ID"
+echo "    Status: $STATUS"
+echo "    Scope: $SCOPE"
+
+# ============================================================================
+# PART 4: VALIDATE AUTHORIZATION STATUS
+# ============================================================================
+
+echo "[4/5] Validating authorization status..."
+
+# Check status
+case "$STATUS" in
+  ACTIVE)
+    echo "    ✓ Status is ACTIVE"
+    ;;
+  REQUESTED)
+    echo "    ✗ Status is REQUESTED (not yet authorized)"
+    exit 1
+    ;;
+  SUSPENDED)
+    echo "    ✗ Status is SUSPENDED"
+    exit 1
+    ;;
+  REVOKED)
+    echo "    ✗ Status is REVOKED"
+    exit 1
+    ;;
+  EXPIRED)
+    echo "    ✗ Status is EXPIRED"
+    exit 1
+    ;;
+  *)
+    echo "    ✗ Unknown authorization status: $STATUS"
+    exit 2
+    ;;
+esac
+
+# Check revocation status
+case "$REVOKED" in
+  ACTIVE)
+    echo "    ✓ Revocation status is ACTIVE (not revoked)"
+    ;;
+  REVOKED)
+    echo "    ✗ Revocation status is REVOKED"
+    exit 1
+    ;;
+  *)
+    echo "    ✗ Unknown revocation status: $REVOKED"
+    exit 2
+    ;;
+esac
+
+# Check expiration if set
+if [ "$EXPIRES" != "null" ]; then
+  CURRENT_TIME=$(date +%s 2>/dev/null || echo "0")
+  EXPIRATION_TIME=$(date -d "$EXPIRES" +%s 2>/dev/null || date -j -f "%Y-%m-%dT%H:%M:%SZ" "$EXPIRES" +%s 2>/dev/null || echo "0")
+
+  if [ "$CURRENT_TIME" -gt "$EXPIRATION_TIME" ]; then
+    echo "    ✗ Authorization has expired ($EXPIRES)"
+    exit 1
+  fi
+  echo "    ✓ Authorization not expired (expires $EXPIRES)"
+fi
+
+# ============================================================================
+# PART 5: VERIFY NODE IDENTITY MATCHES
+# ============================================================================
+
+echo "[5/5] Verifying node identity consistency..."
+
+LOCAL_NODE_ID=$(grep 'node_id' "$SOVEREIGN_DIR/node.json" | head -1 | sed 's/.*"node_id": "\([^"]*\)".*/\1/' || echo "")
+
+if [ "$LOCAL_NODE_ID" != "$NODE_ID" ]; then
+  echo "    ✗ Node ID mismatch"
+  echo "      Authorization: $NODE_ID"
+  echo "      Local node: $LOCAL_NODE_ID"
+  exit 2
+fi
+
+echo "    ✓ Node identity matches"
+
+# ============================================================================
+# SUCCESS
+# ============================================================================
+
+echo ""
+echo "=========================================="
+echo "AUTHORIZATION_STATUS: VALID"
+echo "=========================================="
+echo ""
+echo "Node $NODE_ID is authorized for:"
+echo "  Scope: $SCOPE"
+echo "  Authorization: $AUTH_ID"
+echo "  Status: $STATUS"
+echo ""
+
+exit 0

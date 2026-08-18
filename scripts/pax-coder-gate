@@ -4,18 +4,21 @@
 # This is the AUTHORITATIVE single entry point for all protected operations.
 # It verifies:
 #   1. Release integrity
-#   2. Capability possession
-#   3. Capability validity
-#   4. Capability signature
+#   2. Node authorization status (ACTIVE)
+#   3. Capability possession
+#   4. Capability validity
+#   5. Capability signature
 #
 # Protected operations:
 #   - generate_node_key
 #   - generate_release
+#   - sign releases
+#   - production kernel authorization
 #
 # Exit codes:
 #   0 = AUTHORIZED (protected execution allowed)
 #   1 = INTEGRITY_FAILED (release verification failed)
-#   2 = AUTHORIZATION_DENIED (capability missing or invalid)
+#   2 = AUTHORIZATION_DENIED (node not authorized or capability missing/invalid)
 #   3 = SCRIPT_ERROR (cannot determine status)
 
 set -e
@@ -46,10 +49,27 @@ echo "    ✓ Release integrity verified"
 echo ""
 
 # ============================================================================
-# PART 2: CAPABILITY POSSESSION (required for protected execution)
+# PART 2: NODE AUTHORIZATION STATUS (required for protected execution)
 # ============================================================================
 
-echo "[2/5] Checking for capability..."
+echo "[2/5] Verifying node authorization status..."
+
+if ! "$SCRIPT_DIR/verify-node-authorization" > /tmp/pax-gate-auth-$$.txt 2>&1; then
+  echo "FAILED: Node authorization check failed"
+  cat /tmp/pax-gate-auth-$$.txt
+  rm -f /tmp/pax-gate-auth-$$.txt
+  exit 2
+fi
+
+rm -f /tmp/pax-gate-auth-$$.txt
+echo "    ✓ Node authorization verified"
+echo ""
+
+# ============================================================================
+# PART 3: CAPABILITY POSSESSION (required for protected execution)
+# ============================================================================
+
+echo "[3/5] Checking for capability..."
 
 # Capability can come from:
 # 1. Environment variable: PAX_CAPABILITY_TOKEN
@@ -86,10 +106,10 @@ echo "    ✓ Capability token found"
 echo ""
 
 # ============================================================================
-# PART 3: CAPABILITY PARSING (extract fields)
+# PART 4: CAPABILITY PARSING (extract fields)
 # ============================================================================
 
-echo "[3/5] Parsing capability..."
+echo "[4/5] Parsing capability..."
 
 # Capability format: JSON with signature
 # Extract fields using simple bash parsing
@@ -115,10 +135,10 @@ echo "    ✓ Capability parsed"
 echo ""
 
 # ============================================================================
-# PART 4: CAPABILITY VALIDATION
+# PART 5: CAPABILITY VALIDATION
 # ============================================================================
 
-echo "[4/5] Validating capability..."
+echo "[5/5] Validating capability..."
 
 # Check 1: Current release commit matches capability
 CURRENT_COMMIT=$(git rev-parse HEAD 2>/dev/null || echo "")
@@ -161,10 +181,10 @@ fi
 echo ""
 
 # ============================================================================
-# PART 5: CAPABILITY SIGNATURE VERIFICATION
+# PART 6: CAPABILITY SIGNATURE VERIFICATION (future: wire to server key)
 # ============================================================================
 
-echo "[5/5] Verifying capability signature..."
+echo "[6/6] Verifying capability signature..."
 
 # For now, accept valid format as proof
 # In production, verify signature against authorized public key

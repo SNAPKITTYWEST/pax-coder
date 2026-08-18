@@ -1,19 +1,21 @@
 # Sovereign Node Key System
 
-This directory contains the cryptographic identity and prior-art timestamp infrastructure for PAX-Coder.
+This directory contains the cryptographic authorization infrastructure for PAX-Coder.
 
 ## What This Is
 
 The Sovereign Node Key system provides:
 
-1. **Ed25519 Node Identity** — a cryptographic keypair that signs all PAX-Coder outputs
-2. **Repository Commitment** — a SHA-256 hash of the repository state at the time the key was generated
-3. **Prior-Art Timestamp** — a tamper-evident record that this work existed at a particular git commit
-4. **Verification Scripts** — tools to independently verify the integrity of all artifacts
+1. **Ed25519 Node Authorization** — cryptographic identity with authorization for protected operations
+2. **Node Authorization Record** — external authority-signed proof that this node is authorized
+3. **Repository Commitment** — SHA-256 hash of the repository state at key generation time
+4. **Prior-Art Timestamp** — tamper-evident record that this work existed at a particular git commit
+5. **Authorization Verification** — tools to verify node authorization status
+6. **Verification Scripts** — tools to independently verify integrity and authorization
 
 ## How to Use
 
-### Generate a New Key
+### Step 1: Generate a New Node
 
 ```bash
 cd pax-coder/sovereign
@@ -28,22 +30,61 @@ This creates:
 - `verification.json` — Cryptographic verification record
 - `.node_sk` — **PRIVATE KEY** (never committed, permissions 400)
 
-### Verify Existing Key
+### Step 2: Request Authorization
+
+Contact PAX-Coder at:
+- Email: pax-coder@snapkittywest.com
+- Form: https://snapkittywest.com/pax-coder/request
+
+Provide your `node.json` (public identity only). Do NOT share `.node_sk`.
+
+### Step 3: Receive Authorization Record
+
+After approval and provisioning, you receive:
+- `authorization.json` — Authority-signed authorization record for your node
+
+The authorization record contains:
+- Your node ID and public key
+- Authorization status (ACTIVE, REQUESTED, SUSPENDED, REVOKED, EXPIRED)
+- Authorization scope (what operations you can perform)
+- Issue/expiration dates
+- Authority signature
+
+### Step 4: Verify Authorization
 
 ```bash
-./verify_node_key.sh
+./verify_node_key.sh     # Verify node identity integrity
+../scripts/verify-node-authorization  # Verify authorization status
 ```
 
-Checks:
+### Verify Existing Authorization
+
+```bash
+./verify_node_key.sh     # Verify node key integrity
+../scripts/verify-node-authorization  # Verify authorization status
+```
+
+Checks (node key):
 - All public files are present and valid JSON
 - Private key has correct permissions
 - Git commit exists in repository
 - Repository commitment hash is correct
 
+Checks (authorization):
+- Authorization record exists
+- Authorization status is ACTIVE
+- Authorization has not expired
+- Node ID matches
+- Revocation status is not REVOKED
+
 ## Security Model
 
 ### What This Proves
 
+✓ **Node Identity** — Cryptographic identity of the node (Ed25519 public key)
+✓ **Node Authorization** — External authority has approved this node for protected operations
+✓ **Authorization Status** — Node is ACTIVE, REQUESTED, SUSPENDED, REVOKED, or EXPIRED
+✓ **Authorization Scope** — What protected operations this node is authorized to perform
 ✓ **Integrity** — Repository state at a specific git commit  
 ✓ **Timestamp** — Work existed no later than this UTC time  
 ✓ **Authenticity** — Outputs are signed with a specific Ed25519 key  
@@ -51,10 +92,10 @@ Checks:
 
 ### What This Does NOT Prove
 
-✗ **Authority** — Who controls the key? (recorded separately, outside this system)  
+✗ **Alone without authorization record** — Node identity alone does not prove authority
 ✗ **Legal ownership** — No embedded legal claims  
 ✗ **Blockchain confirmation** — Timestamp is local only (unconfirmed)  
-✗ **Work quality** — Only proves existence, not correctness or usefulness
+✗ **Work quality** — Only proves authorization and existence, not correctness or usefulness
 
 ### Public vs. Private
 

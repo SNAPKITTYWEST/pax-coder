@@ -94,22 +94,26 @@ PAX-Coder has a real authorization boundary for protected operations.
 
 **What is a protected operation?**
 
-Operations that require proof of authorization from the PAX-Coder authority:
-- Generating a Sovereign Node credential
-- Signing an official release
-- Provisioning a new node
+Operations that require authorization from the PAX-Coder authority:
+- Signing official releases
+- Production kernel authorization
+- Provisioning new nodes
+- Commercial production execution
 
-**Authorization flow:**
+**Authorization is based on:**
 
-1. **Request** — Create a node identity
-2. **Request provisioning** — Contact PAX-Coder authority
-3. **Authority decision** — Accept or deny
-4. **Provisioned node** — Receive signed authorization capability
-5. **Protected execution** — Use capability to perform protected operations
+1. **Valid node identity** — Cryptographically signed with Ed25519 private key
+2. **Valid authorization record** — Signed by PAX-Coder authority (external)
+3. **Active authorization status** — Record shows ACTIVE (not REQUESTED, SUSPENDED, REVOKED, or EXPIRED)
+4. **Permitted scope** — Authorization includes required operation
+5. **Non-revoked** — Authorization has not been revoked
 
-**An unauthorized public clone cannot generate fake authorization.**
+**An unauthorized node cannot perform protected operations.**
 
-The gate requires a cryptographically signed capability from the external authorization authority.
+Protected operations require:
+- Valid Sovereign Node Key (proves possession of node private key)
+- Valid Authorization Record (proves PAX-Coder authority approved this node)
+- Both must verify against cryptographic signatures
 
 ### Getting Access
 
@@ -145,23 +149,46 @@ PAX-Coder reviews your request and approves or denies based on use case and tier
 - Individual: $250–$500 per provisioned node
 - Commercial/Enterprise: Per tier pricing
 
-**Step 5: Node Provisioning + Capability**
+**Step 5: Node Provisioning + Authorization**
 
 After approval (and payment if required), you receive:
-- Provisioned Sovereign Node keypair (node_sk, node_pk.pem)
-- node.json metadata
-- Authorization capability token for protected operations
+- Provisioned Sovereign Node keypair (node_sk, node_pk.pem) — Your cryptographic identity
+- node.json — Public node metadata
+- authorization.json — Authority-signed authorization record proving the node is authorized
 
-### Authorized Execution (With Capability Token)
+### Authorized Execution (With Provisioned Node)
 
-If you have received a capability token from the authority:
+If you have received a provisioned Sovereign Node with active authorization:
 
 ```bash
-export PAX_CAPABILITY_TOKEN="<token>"
-./sovereign/generate_release.sh    # Now authorized to sign
+cd sovereign
+./generate_release.sh    # Automatically uses node authorization
 ```
 
-Without the capability, this fails with an explicit authorization denial.
+The gate verifies:
+1. ✓ Release integrity (public clone already proved this)
+2. ✓ Node authorization status is ACTIVE (authorization.json is valid and not revoked)
+3. ✓ Authorization has not expired
+4. ✓ Protected operation is permitted for this node's scope
+
+Without valid node authorization, protected execution is denied with an explicit error.
+
+### What Sovereign Node Keys Prove
+
+**Sovereign Node Keys are real authorization credentials that prove:**
+
+✓ **Node Identity** — You possess the private key for this node  
+✓ **Node Authorization** — The PAX-Coder authority has authorized this node  
+✓ **Authorization Status** — The node is ACTIVE (not suspended, revoked, or expired)  
+✓ **Scope** — The node is authorized for specific protected operations  
+✓ **Timestamp** — Work existed and was authorized at this UTC time  
+✓ **Integrity** — Repository state matches the signed commitment  
+
+**Sovereign Node Keys do NOT prove (alone):**
+
+✗ **Without authorization record** — Node identity alone cannot authorize operations  
+✗ **Legal ownership** — No embedded legal claims  
+✗ **Work quality** — Only proves authorization and existence
 
 ### Security Documentation
 
