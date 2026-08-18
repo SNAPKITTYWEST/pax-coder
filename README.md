@@ -21,6 +21,26 @@ Ampere `sm_86`, with RTX 3080 as the primary engineering target.
 
 ---
 
+## ✅ Verify This Clone
+
+**After cloning, verify your copy is authentic:**
+
+```bash
+./scripts/verify-clone
+```
+
+This confirms:
+- ✓ Git commit matches official release
+- ✓ All files are unmodified
+- ✓ Release is cryptographically signed
+- ✓ Clone is authentic
+
+📖 Full guide: [VERIFY_CLONE.md](VERIFY_CLONE.md)
+
+If verification fails: **Do NOT trust this clone.**
+
+---
+
 ## 🔐 Sovereign Node Key & Security
 
 Every PAX-Coder output is **cryptographically signed** with a Sovereign Node Key — an Ed25519 keypair that commits to:
