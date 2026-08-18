@@ -18,3 +18,22 @@ node_modules/
 .env.local
 wandb/
 runs/
+
+# Sovereign Node Key — NEVER commit private key material
+sovereign/.node_sk
+sovereign/.node_sk.*
+sovereign/*_sk
+sovereign/*_sk.*
+sovereign/*/.*key*
+sovereign/*/*key*
+*.pem
+.key
+*.key
+*.priv
+*_private*
+*_secret*
+
+# Private key patterns (any location)
+BEGIN.*PRIVATE
+-----BEGIN
+-----END
