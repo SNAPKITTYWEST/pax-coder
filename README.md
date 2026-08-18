@@ -21,6 +21,20 @@ Ampere `sm_86`, with RTX 3080 as the primary engineering target.
 
 ---
 
+## 💰 Pricing & Access
+
+**Contact for access. All tiers require approval.**
+
+- **Community/Contributor:** $0 (approved open-source/research)
+- **Individual:** $250–$500 (one provisioned node)
+- **Commercial Team:** $12,000–$25,000/year (unlimited nodes)
+- **Enterprise:** $50,000–$150,000+/year (custom deployment, audits)
+
+📖 [Full Pricing & Plans](PRICING.md)  
+📞 [Request Access](CONTACT.md)
+
+---
+
 ## ✅ Verify This Clone
 
 **After cloning, verify your copy is authentic:**
