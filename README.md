@@ -39,65 +39,87 @@ This confirms:
 
 If verification fails: **Do NOT trust this clone.**
 
-### Checking for Protected Operations
+### Checking Security Status
 
-If you need to perform protected operations (e.g., signing releases), verify both integrity AND authorization:
+To see the complete security posture of your clone:
 
 ```bash
-./scripts/verify-release
+./scripts/verify-pax-coder
 ```
 
-This script checks:
-- ✓ Clone integrity (same as verify-clone)
-- ✓ Authorization status (do you have capability?)
+This reports:
+- ✓ Release integrity status
+- ✓ Release signature validity
+- ✓ Node identity presence
+- ✓ Authorization capability status
+- ✓ Protected execution state
 
-**Possible outcomes:**
-- `VERIFIED_AND_AUTHORIZED` (exit 0) — You can perform protected operations
-- `VERIFIED_NOT_AUTHORIZED` (exit 2) — Clone is authentic but no authorization
-- `INTEGRITY_FAILED` (exit 1) — Clone integrity check failed
-
-📖 Authorization architecture: [docs/adr/0002-authorization-boundary.md](docs/adr/0002-authorization-boundary.md)
+📖 Architecture: [docs/adr/0009-protected-execution-capability.md](docs/adr/0009-protected-execution-capability.md)
 
 ---
 
-## 🔐 Sovereign Node Key & Security
+## 🔐 Protected Execution Gateway
 
-Every PAX-Coder output is **cryptographically signed** with a Sovereign Node Key — an Ed25519 keypair that commits to:
-- ✅ Repository integrity (SHA-256 commitment of all tracked files)
-- ✅ Timestamp (git commit + UTC time)
-- ✅ Authenticity (your Ed25519 public key)
-- ✅ Non-repudiation (proof of signing)
+PAX-Coder has a real authorization boundary for protected operations.
 
-### Request Your Node Key
+**A public clone:**
+- ✅ Can verify integrity
+- ❌ Cannot perform protected operations
+- ❌ Cannot generate authorized releases
+- ❌ Cannot sign with authority
 
-**Node key generation is a protected operation.** To request a node key:
+**What is a protected operation?**
 
-1. **Pay for generation** — Click the button below to initiate payment
-2. **Provide your details** — Email + intended use case
-3. **Receive your credentials** — Authorization token via secure channel
-4. **Set authorization** — `export PAX_AUTH_TOKEN=<token>`
-5. **Generate locally** — `cd sovereign && ./generate_node_key.sh`
+Operations that require proof of authorization from the PAX-Coder authority:
+- Generating a Sovereign Node credential
+- Signing an official release
+- Provisioning a new node
 
-**Payment & Request:**
+**Authorization flow:**
 
-[![Request Node Key](https://img.shields.io/badge/💳-Request%20Node%20Key-blue?style=for-the-badge)](https://snapkittywest.stripe.com/node-key-request)
+1. **Request** — Create a node identity
+2. **Request provisioning** — Contact PAX-Coder authority
+3. **Authority decision** — Accept or deny
+4. **Provisioned node** — Receive signed authorization capability
+5. **Protected execution** — Use capability to perform protected operations
 
-_Stripe payment processor. Secure, encrypted. No card details stored locally._
+**An unauthorized public clone cannot generate fake authorization.**
 
-### Quick Start: Generate Your Node Key (After Authorization)
+The gate requires a cryptographically signed capability from the external authorization authority.
 
-Once you have authorization:
+### Creating a Node Identity (Public, No Authorization)
+
+A node identity is just a cryptographic public key + metadata. Anyone can create one:
 
 ```bash
 cd sovereign
-./generate_node_key.sh      # Generates keypair locally
-./verify_node_key.sh        # Verify generation was successful
+./generate_node_key.sh      # Creates identity (public)
+./verify_node_key.sh        # Verify identity is valid
 ```
 
 This creates:
-- `node.json` — Public identity
-- `prior_art.json` — Timestamp record
-- `.node_sk` — Private key (local only, never committed, never shared)
+- `node.json` — Public identity metadata
+- `node_pk.pem` — Public key
+- `.node_sk` — Private key (local only, never committed)
+
+**Important:** This identity is NOT authorized for protected operations. It is unregistered and unauthorized.
+
+To become authorized:
+1. Contact the PAX-Coder authority
+2. Request provisioning with your node identity
+3. Receive a signed authorization capability
+4. Protected operations now work
+
+### Authorized Execution (With Capability Token)
+
+If you have received a capability token from the authority:
+
+```bash
+export PAX_CAPABILITY_TOKEN="<token>"
+./sovereign/generate_release.sh    # Now authorized to sign
+```
+
+Without the capability, this fails with an explicit authorization denial.
 
 ### Security Documentation
 

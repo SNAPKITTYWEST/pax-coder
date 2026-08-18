@@ -1,0 +1,10 @@
+{
+  "node_id": "pax-coder-1787047913",
+  "algorithm": "Ed25519",
+  "repository_commitment_algorithm": "SHA-256",
+  "repository_commitment": "e19987bc8ef89b4892f18f23ee337edf097f74506ef1a5e61c58188f97b7751e",
+  "git_commit": "f93479c365bc39820ac5f32b18f14bf84959aa13",
+  "manifest_file": "manifest.json",
+  "prior_art_file": "prior_art.json",
+  "verification_timestamp": "2026-08-18T10:11:53Z"
+}
