@@ -23,19 +23,19 @@ Ampere `sm_86`, with RTX 3080 as the primary engineering target.
 
 ## 🔐 Access & Provisioning
 
-**PAX-Coder requires authorization to clone.**
+**PAX-Coder repository is publicly available.** Anyone can clone and verify integrity.
 
-To access the repository and receive a provisioned Sovereign Node:
+**Protected operations require authorization.** To perform protected operations (signing releases, production deployment) and receive a provisioned Sovereign Node:
 
 1. **Contact:** Submit access request at [CONTACT.md](CONTACT.md)
 2. **Select tier:** Choose the appropriate plan
-3. **Approval:** PAX-Coder reviews and approves
+3. **Approval:** PAX-Coder reviews and approves your use case
 4. **Payment (if applicable):** Complete commercial agreement
-5. **Provisioning:** Receive authenticated clone credentials + node key
+5. **Provisioning:** Receive provisioned Sovereign Node + authorization capability
 
-**Pricing:**
+**Pricing (all require approval):**
 
-- **Community/Contributor:** $0 (approved open-source/research)
+- **Community/Contributor:** $0 after approval (open-source/research use only)
 - **Individual:** $250–$500 (per provisioned node, one-time)
 - **Commercial Team:** $12,000–$25,000/year (unlimited nodes)
 - **Enterprise:** $50,000–$150,000+/year (custom deployment, audits)
@@ -113,30 +113,44 @@ The gate requires a cryptographically signed capability from the external author
 
 ### Getting Access
 
-**Step 1: Request Access**
+**Step 1: Clone the Repository (Free)**
 
-Fill out the provisioning form at [CONTACT.md](CONTACT.md) with:
+```bash
+git clone https://github.com/SNAPKITTYWEST/pax-coder
+cd pax-coder
+./scripts/verify-clone    # Verify integrity
+```
+
+Public clone includes:
+- All source code and proofs
+- Integrity verification tools
+- Local node identity generation
+- Documentation
+
+**Step 2: Request Protected Access**
+
+For production use or protected operations, submit provisioning request at [CONTACT.md](CONTACT.md) with:
 - Your name/organization
 - Intended use case
-- Requested tier
+- Requested tier (Community, Individual, Commercial, Enterprise)
 - Deployment requirements
 
-**Step 2: Approval**
+**Step 3: Approval**
 
-PAX-Coder reviews and approves your request.
+PAX-Coder reviews your request and approves or denies based on use case and tier.
 
-**Step 3: Payment (if applicable)**
+**Step 4: Payment (if applicable)**
 
-- Community: $0 (after approval for qualifying use)
-- Individual: $250–$500 per node
+- Community: $0 (after approval, for open-source/research)
+- Individual: $250–$500 per provisioned node
 - Commercial/Enterprise: Per tier pricing
 
-**Step 4: Clone Access + Node Key**
+**Step 5: Node Provisioning + Capability**
 
 After approval (and payment if required), you receive:
-- Authenticated credentials to clone the repository
 - Provisioned Sovereign Node keypair (node_sk, node_pk.pem)
-- node.json and provisioning metadata
+- node.json metadata
+- Authorization capability token for protected operations
 
 ### Authorized Execution (With Capability Token)
 
