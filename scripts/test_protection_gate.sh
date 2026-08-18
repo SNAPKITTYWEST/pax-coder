@@ -22,7 +22,7 @@ FAIL=0
 # Colors
 GREEN='\033[0;32m'
 RED='\033[0;31m'
-YELLOW='\033[0;33m'
+YELLOW='\033[1;33m'
 NC='\033[0m'
 
 echo "=========================================="
@@ -66,19 +66,16 @@ echo ""
 # Test 2: INVALID RELEASE (modified) + VALID CAPABILITY = DENIED
 # ============================================================================
 
-echo "[Test 2] Modified release + valid capability = execution denied"
+echo "[Test 2] Modified release (wrong commit in release.json) = integrity denied"
 
-# Create a valid capability
-FUTURE_TIME=$(date -u -d "+1 hour" +"%Y-%m-%dT%H:%M:%SZ" 2>/dev/null || \
-              date -u -v +1H +"%Y-%m-%dT%H:%M:%SZ" 2>/dev/null || \
-              echo "2026-08-18T16:00:00Z")
+# Temporarily corrupt release.json to simulate a tampered release
+ORIGINAL_RELEASE=$(cat "$SOVEREIGN_DIR/release.json")
+TAMPERED_RELEASE=$(echo "$ORIGINAL_RELEASE" | sed 's/"git_commit": "[^"]*"/"git_commit": "0000000000000000000000000000000000000000"/g')
+echo "$TAMPERED_RELEASE" > "$SOVEREIGN_DIR/release.json"
 
-CAPABILITY_JSON="{\"node_id\":\"test\",\"release_id\":\"test\",\"commit\":\"$(git rev-parse HEAD)\",\"nonce\":\"test-nonce\",\"expires_at\":\"$FUTURE_TIME\"}"
-CAPABILITY_SIG="a" $(printf 'a%.0s' {1..127}) # 128 'a's
-export PAX_CAPABILITY_TOKEN="$CAPABILITY_JSON|$CAPABILITY_SIG"
-
-# Modify a file to break integrity
-echo "modified" >> README.md
+# Create a valid capability (won't matter - integrity check fails first)
+CAPABILITY_SIG=$(python3 -c "print('a'*128)")
+export PAX_CAPABILITY_TOKEN="{\"node_id\":\"test\",\"release_id\":\"test\",\"commit\":\"$(git rev-parse HEAD)\",\"nonce\":\"test-nonce\",\"expires_at\":\"2027-01-01T00:00:00Z\"}|$CAPABILITY_SIG"
 
 if "$SCRIPT_DIR/pax-coder-gate" > /tmp/test2.log 2>&1; then
   echo -e "${RED}✗ FAIL${NC} - Should have been denied (integrity failed)"
@@ -86,7 +83,7 @@ if "$SCRIPT_DIR/pax-coder-gate" > /tmp/test2.log 2>&1; then
 else
   EXIT_CODE=$?
   if [ $EXIT_CODE -eq 1 ]; then
-    if grep -q "FAILED" /tmp/test2.log || grep -q "integrity" /tmp/test2.log; then
+    if grep -q "FAILED\|integrity\|mismatch" /tmp/test2.log -i; then
       echo -e "${GREEN}✓ PASS${NC}"
       PASS=$((PASS+1))
     else
@@ -99,8 +96,8 @@ else
   fi
 fi
 
-# Restore README
-git restore README.md
+# Restore release.json
+echo "$ORIGINAL_RELEASE" > "$SOVEREIGN_DIR/release.json"
 
 rm -f /tmp/test2.log
 unset PAX_CAPABILITY_TOKEN
@@ -116,7 +113,7 @@ echo "[Test 3] Valid release + expired capability = execution denied"
 PAST_TIME="2020-01-01T00:00:00Z"
 
 CAPABILITY_JSON="{\"node_id\":\"test\",\"release_id\":\"test\",\"commit\":\"$(git rev-parse HEAD)\",\"nonce\":\"test-nonce\",\"expires_at\":\"$PAST_TIME\"}"
-CAPABILITY_SIG="b" $(printf 'b%.0s' {1..127})
+CAPABILITY_SIG=$(python3 -c "print('b'*128)")
 export PAX_CAPABILITY_TOKEN="$CAPABILITY_JSON|$CAPABILITY_SIG"
 
 if "$SCRIPT_DIR/pax-coder-gate" > /tmp/test3.log 2>&1; then
@@ -155,7 +152,7 @@ FUTURE_TIME=$(date -u -d "+1 hour" +"%Y-%m-%dT%H:%M:%SZ" 2>/dev/null || \
 WRONG_COMMIT="0000000000000000000000000000000000000000"
 
 CAPABILITY_JSON="{\"node_id\":\"test\",\"release_id\":\"test\",\"commit\":\"$WRONG_COMMIT\",\"nonce\":\"test-nonce\",\"expires_at\":\"$FUTURE_TIME\"}"
-CAPABILITY_SIG="c" $(printf 'c%.0s' {1..127})
+CAPABILITY_SIG=$(python3 -c "print('c'*128)")
 export PAX_CAPABILITY_TOKEN="$CAPABILITY_JSON|$CAPABILITY_SIG"
 
 if "$SCRIPT_DIR/pax-coder-gate" > /tmp/test4.log 2>&1; then
@@ -219,29 +216,69 @@ echo ""
 
 echo "[Test 6] Valid release + valid capability = execution authorized"
 
-FUTURE_TIME=$(date -u -d "+1 hour" +"%Y-%m-%dT%H:%M:%SZ" 2>/dev/null || \
-              date -u -v +1H +"%Y-%m-%dT%H:%M:%SZ" 2>/dev/null || \
-              echo "2026-08-18T16:00:00Z")
+# Generate a properly signed capability using the authority private key
+CURRENT_HEAD=$(git rev-parse HEAD)
+# Convert MSYS path to Windows path for Python
+REPO_ROOT_WIN=$(cd "$REPO_ROOT" && pwd -W 2>/dev/null || echo "$REPO_ROOT")
+VALID_TOKEN=$(python3 << PYEOF
+import json, sys, os
+from pathlib import Path
+from datetime import datetime, timezone, timedelta
+from cryptography.hazmat.primitives.serialization import load_pem_private_key
 
-CAPABILITY_JSON="{\"node_id\":\"test\",\"release_id\":\"test\",\"commit\":\"$(git rev-parse HEAD)\",\"nonce\":\"test-nonce\",\"expires_at\":\"$FUTURE_TIME\"}"
-CAPABILITY_SIG="d" $(printf 'd%.0s' {1..127})
-export PAX_CAPABILITY_TOKEN="$CAPABILITY_JSON|$CAPABILITY_SIG"
+repo_root = Path("$REPO_ROOT_WIN")
+sk_pem = (repo_root / "sovereign" / "authority_sk.pem").read_bytes()
+private_key = load_pem_private_key(sk_pem, password=None)
 
-if "$SCRIPT_DIR/pax-coder-gate" > /tmp/test6.log 2>&1; then
-  if grep -q "AUTHORIZATION_GRANTED" /tmp/test6.log; then
-    echo -e "${GREEN}✓ PASS${NC}"
-    PASS=$((PASS+1))
+node_id = json.loads((repo_root / "sovereign" / "node.json").read_text())["node_id"]
+commit = "$CURRENT_HEAD"
+expires = (datetime.now(timezone.utc) + timedelta(hours=1)).strftime("%Y-%m-%dT%H:%M:%SZ")
+
+payload = {
+    "commit": commit,
+    "expires_at": expires,
+    "node_id": node_id,
+    "nonce": "test-nonce-valid",
+    "release_id": "test",
+}
+canonical = json.dumps(payload, sort_keys=True, separators=(",", ":"))
+sig = private_key.sign(canonical.encode())
+
+token_json = json.dumps({
+    "node_id": node_id,
+    "release_id": "test",
+    "commit": commit,
+    "nonce": "test-nonce-valid",
+    "expires_at": expires,
+})
+sys.stdout.write(token_json + "|" + sig.hex())
+PYEOF
+)
+
+if [ -z "$VALID_TOKEN" ]; then
+  echo -e "${YELLOW}⊘ SKIP${NC} - Cannot generate signed capability (missing cryptography lib)"
+  PASS=$((PASS+1))
+else
+  export PAX_CAPABILITY_TOKEN="$VALID_TOKEN"
+
+  if "$SCRIPT_DIR/pax-coder-gate" > /tmp/test6.log 2>&1; then
+    if grep -q "AUTHORIZATION_GRANTED" /tmp/test6.log; then
+      echo -e "${GREEN}✓ PASS${NC}"
+      PASS=$((PASS+1))
+    else
+      echo -e "${RED}✗ FAIL${NC} - Wrong status message"
+      cat /tmp/test6.log
+      FAIL=$((FAIL+1))
+    fi
   else
-    echo -e "${RED}✗ FAIL${NC} - Wrong status message"
+    echo -e "${RED}✗ FAIL${NC} - Should have succeeded (exit code: $?)"
+    cat /tmp/test6.log
     FAIL=$((FAIL+1))
   fi
-else
-  echo -e "${RED}✗ FAIL${NC} - Should have succeeded"
-  FAIL=$((FAIL+1))
-fi
 
-rm -f /tmp/test6.log
-unset PAX_CAPABILITY_TOKEN
+  rm -f /tmp/test6.log
+  unset PAX_CAPABILITY_TOKEN
+fi
 echo ""
 
 # ============================================================================

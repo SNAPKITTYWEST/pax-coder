@@ -113,7 +113,7 @@ if SIGNED_CAPABILITY=$(bash "$SOVEREIGN_DIR/sign_capability.sh" "$TEST_CAPABILIT
     TEMP_SIG="/tmp/test1-sig-$$.bin"
 
     echo -n "$CANONICAL_JSON" > "$TEMP_MSG"
-    printf '%s' "$(printf '%s' "$AUTHORITY_SIGNATURE" | xxd -r -p)" > "$TEMP_SIG"
+    echo -n "$AUTHORITY_SIGNATURE" | xxd -r -p > "$TEMP_SIG"
 
     if openssl pkeyutl -verify -inkey "$SOVEREIGN_DIR/authority_pk.pem" \
                        -pubin -sigfile "$TEMP_SIG" \
@@ -148,7 +148,7 @@ if [ -n "$SIGNED_CAPABILITY" ] && [ -n "$AUTHORITY_SIGNATURE" ]; then
   TEMP_SIG="/tmp/test2-sig-$$.bin"
 
   echo -n "$CANONICAL_JSON" > "$TEMP_MSG"
-  printf '%s' "$(printf '%s' "$AUTHORITY_SIGNATURE" | xxd -r -p)" > "$TEMP_SIG"
+  echo -n "$AUTHORITY_SIGNATURE" | xxd -r -p > "$TEMP_SIG"
 
   # Try to verify authority signature with node public key
   # This MUST fail
@@ -224,7 +224,7 @@ if [ -n "$SIGNED_CAPABILITY" ] && [ -n "$AUTHORITY_SIGNATURE" ]; then
   TEMP_SIG="/tmp/test4-sig-$$.bin"
 
   echo -n "$MODIFIED_JSON" > "$TEMP_MSG"
-  printf '%s' "$(printf '%s' "$AUTHORITY_SIGNATURE" | xxd -r -p)" > "$TEMP_SIG"
+  echo -n "$AUTHORITY_SIGNATURE" | xxd -r -p > "$TEMP_SIG"
 
   # Try to verify signature of modified payload
   # This MUST fail
@@ -265,8 +265,9 @@ if SIGNED_DIFF=$(bash "$SOVEREIGN_DIR/sign_capability.sh" "$DIFFERENT_NODE_FILE"
   # If they don't match, DENY (even with valid authority signature)
 
   # This is verified by checking the gate logic (not at crypto level, but policy level)
-  if grep -q 'if.*CAPABILITY_NODE.*LOCAL_NODE.*DENY' "$SCRIPT_DIR/pax-coder-gate" 2>/dev/null || \
-     grep -q 'Node ID mismatch' "$SCRIPT_DIR/pax-coder-gate" 2>/dev/null; then
+  # Check both the shell wrapper and the Python gate for node binding logic
+  if grep -q 'Node ID mismatch' "$REPO_ROOT/pax_coder_gate.py" 2>/dev/null || \
+     grep -q 'if.*CAPABILITY_NODE.*LOCAL_NODE.*DENY' "$SCRIPT_DIR/pax-coder-gate" 2>/dev/null; then
     echo -e "${GREEN}✓ PASS${NC} - Gate checks node binding separately from signature"
     PASS=$((PASS+1))
   else

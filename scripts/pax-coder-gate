@@ -1,289 +1,39 @@
 #!/bin/bash
 # PAX-Coder Protected Execution Gate (ADR-0009)
 #
-# This is the AUTHORITATIVE single entry point for all protected operations.
-# It verifies:
-#   1. Release integrity
-#   2. Node authorization status (ACTIVE)
-#   3. Capability possession
-#   4. Capability validity
-#   5. Capability signature
+# Shell wrapper for backward compatibility.
+# The actual gate logic is in pax_coder_gate.py (native Ed25519, Pydantic).
 #
-# Protected operations:
-#   - generate_node_key
-#   - generate_release
-#   - sign releases
-#   - production kernel authorization
+# This wrapper:
+#   1. Locates the Python gate
+#   2. Passes through environment and arguments
+#   3. Preserves exit codes
 #
-# Exit codes:
+# Exit codes (passed through from Python):
 #   0 = AUTHORIZED (protected execution allowed)
 #   1 = INTEGRITY_FAILED (release verification failed)
 #   2 = AUTHORIZATION_DENIED (node not authorized or capability missing/invalid)
 #   3 = SCRIPT_ERROR (cannot determine status)
 
-set -e
-
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(dirname "$SCRIPT_DIR")"
-SOVEREIGN_DIR="$REPO_ROOT/sovereign"
 
-# ============================================================================
-# PART 1: RELEASE INTEGRITY VERIFICATION (free, public)
-# ============================================================================
+# Export repo root for the Python gate
+export PAX_REPO_ROOT="$REPO_ROOT"
 
-echo "=========================================="
-echo "PAX-CODER PROTECTED EXECUTION GATE"
-echo "=========================================="
-echo ""
-echo "[1/5] Verifying release integrity..."
+# Locate Python gate
+PYTHON_GATE="$REPO_ROOT/pax_coder_gate.py"
 
-if ! "$SCRIPT_DIR/verify-clone" > /tmp/pax-gate-integrity-$$.txt 2>&1; then
-  echo "FAILED: Release integrity check failed"
-  cat /tmp/pax-gate-integrity-$$.txt
-  rm -f /tmp/pax-gate-integrity-$$.txt
-  exit 1
-fi
-
-rm -f /tmp/pax-gate-integrity-$$.txt
-echo "    ✓ Release integrity verified"
-echo ""
-
-# ============================================================================
-# PART 2: NODE AUTHORIZATION STATUS (required for protected execution)
-# ============================================================================
-
-echo "[2/5] Verifying node authorization status..."
-
-if ! "$SCRIPT_DIR/verify-node-authorization" > /tmp/pax-gate-auth-$$.txt 2>&1; then
-  echo "FAILED: Node authorization check failed"
-  cat /tmp/pax-gate-auth-$$.txt
-  rm -f /tmp/pax-gate-auth-$$.txt
-  exit 2
-fi
-
-rm -f /tmp/pax-gate-auth-$$.txt
-echo "    ✓ Node authorization verified"
-echo ""
-
-# ============================================================================
-# PART 3: CAPABILITY POSSESSION (required for protected execution)
-# ============================================================================
-
-echo "[3/5] Checking for capability..."
-
-# Capability can come from:
-# 1. Environment variable: PAX_CAPABILITY_TOKEN
-# 2. File: sovereign/.capability
-# 3. Server request (future)
-
-CAPABILITY_TOKEN="${PAX_CAPABILITY_TOKEN:-}"
-CAPABILITY_FILE="$SOVEREIGN_DIR/.capability"
-
-if [ -z "$CAPABILITY_TOKEN" ] && [ ! -f "$CAPABILITY_FILE" ]; then
-  echo "DENIED: No capability available"
-  echo ""
-  echo "Protected execution requires a capability token."
-  echo ""
-  echo "To obtain authorization:"
-  echo "  1. Contact the PAX-Coder authority"
-  echo "  2. Request a capability for:"
-  echo "     - node_id: $(grep '"node_id"' "$SOVEREIGN_DIR/node.json" 2>/dev/null | cut -d'"' -f4 || echo 'unknown')"
-  echo "     - release: $(git rev-parse HEAD 2>/dev/null || echo 'unknown')"
-  echo "  3. Set: export PAX_CAPABILITY_TOKEN=<capability>"
-  echo "  4. Re-run protected operation"
-  echo ""
-  exit 2
-fi
-
-# Use token from environment or file
-if [ -n "$CAPABILITY_TOKEN" ]; then
-  CAPABILITY="$CAPABILITY_TOKEN"
-else
-  CAPABILITY=$(cat "$CAPABILITY_FILE")
-fi
-
-echo "    ✓ Capability token found"
-echo ""
-
-# ============================================================================
-# PART 4: CAPABILITY PARSING (extract fields)
-# ============================================================================
-
-echo "[4/5] Parsing capability..."
-
-# Capability format: JSON with signature
-# Extract fields using simple bash parsing
-CAPABILITY_JSON=$(echo "$CAPABILITY" | cut -d'|' -f1)
-CAPABILITY_SIGNATURE=$(echo "$CAPABILITY" | cut -d'|' -f2)
-
-# Parse JSON fields
-CAPABILITY_NODE=$(echo "$CAPABILITY_JSON" | grep -o '"node_id":"[^"]*"' | cut -d'"' -f4 || echo "")
-CAPABILITY_RELEASE=$(echo "$CAPABILITY_JSON" | grep -o '"release_id":"[^"]*"' | cut -d'"' -f4 || echo "")
-CAPABILITY_COMMIT=$(echo "$CAPABILITY_JSON" | grep -o '"commit":"[^"]*"' | cut -d'"' -f4 || echo "")
-CAPABILITY_EXPIRES=$(echo "$CAPABILITY_JSON" | grep -o '"expires_at":"[^"]*"' | cut -d'"' -f4 || echo "")
-CAPABILITY_NONCE=$(echo "$CAPABILITY_JSON" | grep -o '"nonce":"[^"]*"' | cut -d'"' -f4 || echo "")
-
-if [ -z "$CAPABILITY_NODE" ] || [ -z "$CAPABILITY_COMMIT" ]; then
-  echo "DENIED: Capability format invalid"
-  exit 2
-fi
-
-echo "    Node ID: $CAPABILITY_NODE"
-echo "    Commit:  $CAPABILITY_COMMIT"
-echo "    Expires: $CAPABILITY_EXPIRES"
-echo "    ✓ Capability parsed"
-echo ""
-
-# ============================================================================
-# PART 5: CAPABILITY VALIDATION
-# ============================================================================
-
-echo "[5/5] Validating capability..."
-
-# Check 1: Current release commit matches capability
-CURRENT_COMMIT=$(git rev-parse HEAD 2>/dev/null || echo "")
-
-if [ "$CURRENT_COMMIT" != "$CAPABILITY_COMMIT" ]; then
-  echo "DENIED: Release commit mismatch"
-  echo "  Expected: $CAPABILITY_COMMIT"
-  echo "  Current:  $CURRENT_COMMIT"
-  exit 2
-fi
-
-echo "    ✓ Commit matches"
-
-# Check 2: Expiration time
-CURRENT_TIME=$(date +%s 2>/dev/null || echo "")
-EXPIRATION_TIME=$(date -d "$CAPABILITY_EXPIRES" +%s 2>/dev/null || date -j -f "%Y-%m-%dT%H:%M:%SZ" "$CAPABILITY_EXPIRES" +%s 2>/dev/null || echo "0")
-
-if [ "$CURRENT_TIME" -gt "$EXPIRATION_TIME" ]; then
-  echo "DENIED: Capability expired"
-  echo "  Expired at: $CAPABILITY_EXPIRES"
-  exit 2
-fi
-
-echo "    ✓ Capability not expired"
-
-# Check 3: Node ID matches (if .node_sk exists, verify consistency)
-if [ -f "$SOVEREIGN_DIR/node.json" ]; then
-  LOCAL_NODE=$(grep '"node_id"' "$SOVEREIGN_DIR/node.json" 2>/dev/null | cut -d'"' -f4 || echo "")
-
-  if [ -n "$LOCAL_NODE" ] && [ "$LOCAL_NODE" != "$CAPABILITY_NODE" ]; then
-    echo "DENIED: Node ID mismatch"
-    echo "  Capability node: $CAPABILITY_NODE"
-    echo "  Local node:      $LOCAL_NODE"
-    exit 2
-  fi
-
-  echo "    ✓ Node ID matches"
-fi
-
-echo ""
-
-# ============================================================================
-# PART 6: CAPABILITY SIGNATURE VERIFICATION (Ed25519 cryptographic validation)
-# ============================================================================
-
-echo "[6/6] Verifying capability signature..."
-
-# Authority public key (Ed25519) - from sovereign/authority_pk.pem
-# This is the canonical authority for capability issuance.
-# CRITICAL: This is the AUTHORITY public key, NOT the NODE public key.
-# The authority private key exists only on the secure authority server.
-# The authority public key is distributed for verification purposes.
-AUTHORITY_PUBLIC_KEY_FILE="$SOVEREIGN_DIR/authority_pk.pem"
-
-if [ ! -f "$AUTHORITY_PUBLIC_KEY_FILE" ]; then
-  echo "ERROR: Authority public key not found at $AUTHORITY_PUBLIC_KEY_FILE"
-  echo "This gate cannot verify capabilities without the authority's public key."
-  echo "HINT: Authority public key should be provided during deployment."
+if [ ! -f "$PYTHON_GATE" ]; then
+  echo "ERROR: Python gate not found at $PYTHON_GATE"
   exit 3
 fi
 
-if [ -z "$CAPABILITY_SIGNATURE" ]; then
-  echo "DENIED: Capability signature missing"
-  exit 2
-fi
-
-# Validate signature format (should be 128 hex characters = 64 bytes)
-if ! echo "$CAPABILITY_SIGNATURE" | grep -qE '^[a-f0-9]{128}$'; then
-  echo "DENIED: Capability signature invalid format (expected 128 hex chars)"
-  exit 2
-fi
-
-# Create canonical JSON representation for verification
-# Must be deterministically serialized (sorted keys, no extra whitespace)
-# Same format as used by the capability issuer
-if command -v jq &> /dev/null; then
-  CAPABILITY_CANONICAL=$(echo "$CAPABILITY_JSON" | jq -S -c .)
-else
-  # Fallback: use Python for JSON normalization
-  CAPABILITY_CANONICAL=$(python3 -c "
-import json
-import sys
-try:
-  data = json.loads('''$CAPABILITY_JSON''')
-  print(json.dumps(data, sort_keys=True, separators=(',', ':')))
-except:
-  sys.exit(1)
-" 2>/dev/null)
-fi
-
-if [ -z "$CAPABILITY_CANONICAL" ]; then
-  echo "ERROR: Failed to parse capability JSON"
+# Check Python3 is available
+if ! command -v python3 &> /dev/null; then
+  echo "ERROR: python3 not found in PATH"
   exit 3
 fi
 
-# Convert hex signature to binary for openssl verification
-SIGNATURE_BIN=$(printf '%s' "$CAPABILITY_SIGNATURE" | xxd -r -p 2>/dev/null) || {
-  echo "DENIED: Could not decode signature"
-  exit 2
-}
-
-# Create temporary files for verification
-TEMP_MSG="/tmp/pax-capability-msg-$$.bin"
-TEMP_SIG="/tmp/pax-capability-sig-$$.bin"
-
-trap "rm -f '$TEMP_MSG' '$TEMP_SIG'" EXIT
-
-# Write canonical JSON to temp file
-echo -n "$CAPABILITY_CANONICAL" > "$TEMP_MSG"
-
-# Write binary signature to temp file
-printf '%s' "$SIGNATURE_BIN" > "$TEMP_SIG"
-
-# Verify signature using openssl with Ed25519
-# The node_pk.pem is a public key in PEM format
-# Use -pubin flag to indicate it's a public key (not private)
-if openssl pkeyutl -verify -inkey "$AUTHORITY_PUBLIC_KEY_FILE" \
-                    -pubin -sigfile "$TEMP_SIG" \
-                    -in "$TEMP_MSG" > /dev/null 2>&1; then
-  echo "    ✓ Signature format valid"
-  echo "    ✓ Signature verified (cryptographic validation)"
-else
-  echo "DENIED: Capability signature verification failed"
-  echo "    The signature is invalid or was not issued by the authority"
-  exit 2
-fi
-
-echo ""
-
-# ============================================================================
-# FINAL: AUTHORIZATION GRANTED
-# ============================================================================
-
-echo "=========================================="
-echo "STATUS: AUTHORIZATION_GRANTED"
-echo "=========================================="
-echo ""
-echo "Protected execution is AUTHORIZED."
-echo ""
-echo "You may now:"
-echo "  - Generate node keys"
-echo "  - Sign releases"
-echo "  - Invoke other protected operations"
-echo ""
-echo "Capability valid until: $CAPABILITY_EXPIRES"
-echo ""
-
-exit 0
+# Execute Python gate with all arguments passed through
+exec python3 "$PYTHON_GATE" "$@"

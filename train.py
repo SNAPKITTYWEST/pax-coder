@@ -91,14 +91,36 @@ def merge_and_export_gguf(output_dir):
 
     merged_dir = f"{output_dir}/merged"
     # llama.cpp GGUF conversion (more reliable than Unsloth's built-in for q4_k_m)
-    os.system(
-        f"cd /tmp && "
-        f"git clone --depth 1 https://github.com/ggerganov/llama.cpp llama_cpp_pax 2>/dev/null || true && "
-        f"cd llama_cpp_pax && make -j$(nproc) && "
-        f"python3 convert_hf_to_gguf.py {merged_dir} "
-        f"--outfile {gguf_dir}/pax-coder-7b-q4_k_m.gguf --outtype q4_k_m"
+    import subprocess
+    import shlex
+
+    llama_cpp_dir = "/tmp/llama_cpp_pax"
+
+    # Clone llama.cpp if not present
+    if not os.path.isdir(llama_cpp_dir):
+        subprocess.run(
+            ["git", "clone", "--depth", "1",
+             "https://github.com/ggerganov/llama.cpp", llama_cpp_dir],
+            check=True,
+        )
+
+    # Build
+    subprocess.run(
+        ["make", f"-j{os.cpu_count() or 4}"],
+        cwd=llama_cpp_dir,
+        check=True,
     )
-    print(f"GGUF saved → {gguf_dir}/pax-coder-7b-q4_k_m.gguf")
+
+    # Convert
+    outfile = f"{gguf_dir}/pax-coder-7b-q4_k_m.gguf"
+    subprocess.run(
+        ["python3", "convert_hf_to_gguf.py", merged_dir,
+         "--outfile", outfile, "--outtype", "q4_k_m"],
+        cwd=llama_cpp_dir,
+        check=True,
+    )
+
+    print(f"GGUF saved → {outfile}")
     print(f"Install: ollama create pax-coder -f {gguf_dir}/Modelfile")
 
 

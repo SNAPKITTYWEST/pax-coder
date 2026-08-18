@@ -79,7 +79,7 @@ test_case 4 "REVOKED authorization" "DENY" \
 
 # Test 5: EXPIRED authorization -> DENY
 test_case 5 "EXPIRED authorization" "DENY" \
-  'echo "$ORIGINAL_AUTH" | sed "s|\"expires_at_utc\": null|\"expires_at_utc\": \"2020-01-01T00:00:00Z\"|" > "$SOVEREIGN_DIR/authorization.json"'
+  'echo "$ORIGINAL_AUTH" | sed "s|\"expires_at_utc\": \"[^\"]*\"|\"expires_at_utc\": \"2020-01-01T00:00:00Z\"|" > "$SOVEREIGN_DIR/authorization.json"'
 
 # Test 6: Authorization matches node ID -> ALLOW
 test_case 6 "Authorization matches node ID" "ALLOW" \
