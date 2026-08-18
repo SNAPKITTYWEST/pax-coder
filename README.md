@@ -4,7 +4,7 @@
 
 # ⛔ PAX-Coder — Commercial Authorization Required
 
-**🔒 CLONE REQUIRES AUTHORIZATION** — Contact pax-coder@snapkittywest.com for access
+**🔒 CLONE REQUIRES AUTHORIZATION** — Contact jessica@collectivekitty.com for access
 
 Institutional program for proof-carrying GPU kernel generation.
 
@@ -33,7 +33,7 @@ Ampere `sm_86`, with RTX 3080 as the primary engineering target.
 All clones require cryptographic authorization. The gate prevents unauthorized access at clone time.
 
 **How to Get Access:**
-1. **Contact:** pax-coder@snapkittywest.com
+1. **Contact:** jessica@collectivekitty.com
 2. **Request:** Specify your use case and tier
 3. **Approval:** PAX-Coder authority reviews (1–3 business days)
 4. **Payment:** Commercial agreement + payment processing

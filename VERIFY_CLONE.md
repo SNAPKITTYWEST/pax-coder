@@ -245,7 +245,7 @@ If the fresh clone verifies, your original clone was modified.
 
 If a fresh clone from the official repository still fails verification:
 
-**Email:** security@snapkittywest.com  
+**Email:** jessica@collectivekitty.com  
 **Subject:** `[SECURITY] PAX-Coder Clone Verification Failed`  
 **Include:**
 - Output of `./scripts/verify-clone`

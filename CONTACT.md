@@ -8,11 +8,11 @@
 
 | Need | Contact |
 |------|---------|
-| **Provisioning Request** | Fill form below or email pax-coder@snapkittywest.com |
+| **Provisioning Request** | Fill form below or email jessica@collectivekitty.com |
 | **Pricing Questions** | See [PRICING.md](PRICING.md) |
-| **Technical Support** | support@snapkittywest.com |
-| **Enterprise** | enterprise@snapkittywest.com |
-| **General Inquiry** | pax-coder@snapkittywest.com |
+| **Technical Support** | jessica@collectivekitty.com |
+| **Enterprise** | jessica@collectivekitty.com |
+| **General Inquiry** | jessica@collectivekitty.com |
 
 ---
 
@@ -131,7 +131,7 @@ Visit: https://snapkittywest.com/pax-coder/request
 
 ### Email
 
-Send to: **pax-coder@snapkittywest.com**
+Send to: **jessica@collectivekitty.com**
 
 Subject: `Provisioning Request: [Your Name/Organization]`
 
@@ -250,7 +250,7 @@ Renewal notice: 60 days before contract end
 
 To renew:
 - Reply to renewal notice, OR
-- Contact: renewal@snapkittywest.com
+- Contact: jessica@collectivekitty.com
 
 ---
 
@@ -265,7 +265,7 @@ To renew:
 
 ### Early Termination
 
-Contact: support@snapkittywest.com
+Contact: jessica@collectivekitty.com
 
 - Prorated refunds available (Individual tier: within 30 days)
 - Commercial/Enterprise: Per contract terms
@@ -315,7 +315,7 @@ A: Yes. Contact support to discuss plan changes.
 
 **Q: Do you offer volume discounts?**
 
-A: Contact enterprise@snapkittywest.com for volume/multi-year pricing.
+A: Contact jessica@collectivekitty.com for volume/multi-year pricing.
 
 ---
 
@@ -323,7 +323,7 @@ A: Contact enterprise@snapkittywest.com for volume/multi-year pricing.
 
 Have questions during provisioning?
 
-**Email:** pax-coder@snapkittywest.com  
+**Email:** jessica@collectivekitty.com  
 **Response time:** 1 business day
 
 Please include:
@@ -346,7 +346,7 @@ Please include:
 ---
 
 **Questions?**  
-Email: pax-coder@snapkittywest.com
+Email: jessica@collectivekitty.com
 
 **Ready to request?**  
 Form: https://snapkittywest.com/pax-coder/request

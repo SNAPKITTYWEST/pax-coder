@@ -199,7 +199,7 @@ https://snapkittywest.com/pax-coder/request
 or email:
 
 ```
-pax-coder@snapkittywest.com
+jessica@collectivekitty.com
 ```
 
 Include:
@@ -290,7 +290,7 @@ Contact support if you believe a violation has occurred.
 **A:** Email:
 
 ```
-enterprise@snapkittywest.com
+jessica@collectivekitty.com
 ```
 
 Include:
@@ -321,7 +321,7 @@ See [LICENSE.md](LICENSE.md) for full details.
 
 ### Individual Tier
 
-- Email support: individual-support@snapkittywest.com
+- Email support: individual-jessica@collectivekitty.com
 - Response time: 2–5 business days
 - Included: Technical questions about provisioning and kernel generation
 
@@ -338,7 +338,7 @@ See [LICENSE.md](LICENSE.md) for full details.
 
 **General inquiries:**
 ```
-pax-coder@snapkittywest.com
+jessica@collectivekitty.com
 ```
 
 **Provisioning requests:**
@@ -348,12 +348,12 @@ https://snapkittywest.com/pax-coder/request
 
 **Enterprise:**
 ```
-enterprise@snapkittywest.com
+jessica@collectivekitty.com
 ```
 
 **Support issues:**
 ```
-support@snapkittywest.com
+jessica@collectivekitty.com
 ```
 
 ---

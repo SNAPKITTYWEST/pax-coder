@@ -118,7 +118,7 @@ This appears in:
                       ↓
 ┌─ COMMERCIAL PROVISIONING FLOW ──────────────────┐
 │                                                  │
-│ Step 1: Contact (pax-coder@snapkittywest.com)  │
+│ Step 1: Contact (jessica@collectivekitty.com)  │
 │ Step 2: Approval (authority reviews, 1-3 days) │
 │ Step 3: Agreement (commercial terms)            │
 │ Step 4: Provisioning (operator-signed auth)     │

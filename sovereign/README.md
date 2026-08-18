@@ -33,7 +33,7 @@ This creates:
 ### Step 2: Request Authorization
 
 Contact PAX-Coder at:
-- Email: pax-coder@snapkittywest.com
+- Email: jessica@collectivekitty.com
 - Form: https://snapkittywest.com/pax-coder/request
 
 Provide your `node.json` (public identity only). Do NOT share `.node_sk`.

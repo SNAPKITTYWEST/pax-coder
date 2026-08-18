@@ -1013,7 +1013,7 @@ swipl -q -t halt -f backends/license_policy.pl -- select open_source_project
 ### Commercial Licensing
 
 For commercial licensing and custom arrangements, contact:
-- **Email:** enterprise@snapkittywest.com
+- **Email:** jessica@collectivekitty.com
 - **Commercial tiers:** Individual ($250-500), Team ($12-25K/yr), Enterprise ($50K+/yr)
 - **Custom terms:** Available for specialized deployments
 
@@ -1062,8 +1062,8 @@ Evidence or Silence — 2026
 - **GitHub:** [github.com/SNAPKITTYWEST/pax-coder](https://github.com/SNAPKITTYWEST/pax-coder)
 - **HuggingFace:** [huggingface.co/Snapkitty/pax-coder-7b](https://huggingface.co/Snapkitty/pax-coder-7b)
 - **Ollama:** `ollama pull Snapkitty/pax-coder-7b`
-- **Email:** pax-coder@snapkittywest.com
-- **Commercial:** enterprise@snapkittywest.com
+- **Email:** jessica@collectivekitty.com
+- **Commercial:** jessica@collectivekitty.com
 - **Discord:** [SnapKitty Community](https://discord.gg/snapkitty)
 
 ---

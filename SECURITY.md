@@ -4,7 +4,7 @@
 
 If you discover a security vulnerability in PAX-Coder, please **do not** open a public GitHub issue. Instead:
 
-1. Email `security@snapkittywest.com` with:
+1. Email `jessica@collectivekitty.com` with:
    - Description of the vulnerability
    - Steps to reproduce
    - Potential impact

@@ -33,7 +33,7 @@ Production-authorized nodes are available through commercial tiers:
 
 Submit provisioning request at:
 - **Form:** [CONTACT.md](CONTACT.md)
-- **Email:** pax-coder@snapkittywest.com
+- **Email:** jessica@collectivekitty.com
 
 Include:
 - Your name/organization
