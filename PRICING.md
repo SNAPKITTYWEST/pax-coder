@@ -186,7 +186,7 @@ REVOKED (if terms violated)
 
 **Step 1: Select Tier**
 
-Choose the appropriate plan above (Community, Individual, Commercial Team, or Enterprise).
+Choose the appropriate plan above (Individual, Commercial Team, or Enterprise).
 
 **Step 2: Request Provisioning**
 
@@ -318,12 +318,6 @@ See [LICENSE.md](LICENSE.md) for full details.
 ---
 
 ## Support
-
-### Community Users
-
-- GitHub Issues for bug reports
-- Documentation at snapkittywest.com
-- Community forum (link)
 
 ### Individual Tier
 

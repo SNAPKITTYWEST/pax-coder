@@ -139,7 +139,6 @@ Include all information from the form above.
 
 ### Response
 
-- **Community tier:** Immediate response (usually same day for qualifying projects)
 - **Individual tier:** 1–3 business days
 - **Commercial/Enterprise:** 2–5 business days (may include business development call)
 

@@ -965,7 +965,7 @@ It is **not DRM.** It does not restrict what you build. It records that you show
 ### Getting a Key
 
 1. **Request:** Submit provisioning request at [CONTACT.md](CONTACT.md)
-2. **Select tier:** Community ($0), Individual ($250-500), Commercial ($12-25K/yr), or Enterprise ($50K+/yr)
+2. **Select tier:** Individual ($250-500), Commercial ($12-25K/yr), or Enterprise ($50K+/yr)
 3. **Approval:** PAX-Coder reviews (1–3 business days)
 4. **Receive:** Production-authorized Sovereign Node Key
 

@@ -21,7 +21,6 @@ Production-authorized nodes are available through commercial tiers:
 
 | Tier | Price | What You Get |
 |------|-------|--------------|
-| **Community** | $0 (after approval) | Repository access, local testing, open-source use |
 | **Individual Node** | $250–$500 | One production-authorized node (one workstation) |
 | **Commercial Team** | $12,000–$25,000/year | Unlimited production-authorized nodes within your organization |
 | **Enterprise** | $50,000–$150,000+/year | Custom audits, white-label rights, direct SLA |
