@@ -158,7 +158,7 @@ def split_and_write(examples):
         with open(out, "w", encoding="utf-8") as f:
             for ex in data:
                 f.write(json.dumps(ex) + "\n")
-        print(f"  {name}: {len(data)} examples → {out}")
+        print(f"  {name}: {len(data)} examples -> {out}")
 
 if __name__ == "__main__":
     print("=== PAX Training Data Extraction ===")

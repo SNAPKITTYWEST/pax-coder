@@ -108,6 +108,30 @@ CONTRIBUTING.md               Contribution guidance
 ABOUT.md                      Short project overview
 ```
 
+## v1.0 Package
+
+The v1.0.0 package marks the institutional foundation release of PAX-Coder.
+
+| File | Role |
+| --- | --- |
+| [`VERSION`](VERSION) | Version marker |
+| [`CHANGELOG.md`](CHANGELOG.md) | Release history |
+| [`RELEASE_NOTES.md`](RELEASE_NOTES.md) | v1.0.0 release notes |
+| [`PACKAGE.md`](PACKAGE.md) | Package inventory and release gates |
+
+Release identity:
+
+```text
+Package: pax-coder
+Version: 1.0.0
+Tag: v1.0.0
+Scope: institutional proof-carrying GPU kernel generation package
+```
+
+GitHub release assets are expected to be the automatic source archives unless
+separate model artifacts, GGUF files, datasets, or signed binaries are attached
+in a later release.
+
 ## PAX Method
 
 PAX treats GPU kernel generation as a proof-carrying systems problem. A kernel
@@ -424,6 +448,9 @@ Before changing claims in this README or publishing a release, check:
 - [`MODEL_CARD.md`](MODEL_CARD.md): model-card draft.
 - [`DATASET_CARD.md`](DATASET_CARD.md): dataset-card draft.
 - [`PAX_CODER_README.md`](PAX_CODER_README.md): commercial integration notes.
+- [`PACKAGE.md`](PACKAGE.md): v1.0.0 package manifest.
+- [`RELEASE_NOTES.md`](RELEASE_NOTES.md): v1.0.0 release notes.
+- [`CHANGELOG.md`](CHANGELOG.md): release history.
 - [`SOVEREIGN_NODE_KEY.md`](SOVEREIGN_NODE_KEY.md): node-key policy.
 - [`CONTRIBUTING.md`](CONTRIBUTING.md): contribution guidance.
 
