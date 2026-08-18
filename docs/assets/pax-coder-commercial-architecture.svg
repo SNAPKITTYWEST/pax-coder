@@ -1,0 +1,84 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720" role="img" aria-labelledby="title desc">
+  <title id="title">PAX Coder commercial architecture</title>
+  <desc id="desc">Commercial architecture diagram for GGUF Q4_K_M tensors, PAX GEMM ABI, CPU reference validation, CUDA device gate, and MoE expert execution.</desc>
+  <defs>
+    <style>
+      .bg { fill: #0f1217; }
+      .panel { fill: #171c24; stroke: #3b4656; stroke-width: 2; }
+      .panel2 { fill: #101820; stroke: #4f7cac; stroke-width: 2; }
+      .gate { fill: #1f1a12; stroke: #d19a2a; stroke-width: 2; }
+      .ok { fill: #15251d; stroke: #52a66a; stroke-width: 2; }
+      .blocked { fill: #281818; stroke: #c45b5b; stroke-width: 2; }
+      .text { fill: #eef3f8; font-family: Segoe UI, Arial, sans-serif; font-size: 24px; }
+      .small { fill: #c8d2dc; font-family: Segoe UI, Arial, sans-serif; font-size: 18px; }
+      .tiny { fill: #9fb0c0; font-family: Segoe UI, Arial, sans-serif; font-size: 15px; }
+      .title { fill: #ffffff; font-family: Segoe UI, Arial, sans-serif; font-size: 34px; font-weight: 700; }
+      .label { fill: #ffffff; font-family: Segoe UI, Arial, sans-serif; font-size: 20px; font-weight: 700; }
+      .arrow { stroke: #8fb8de; stroke-width: 3; fill: none; marker-end: url(#arrowhead); }
+      .dash { stroke: #d19a2a; stroke-width: 3; fill: none; stroke-dasharray: 8 7; marker-end: url(#arrowhead-gold); }
+    </style>
+    <marker id="arrowhead" markerWidth="12" markerHeight="8" refX="11" refY="4" orient="auto">
+      <polygon points="0 0, 12 4, 0 8" fill="#8fb8de"/>
+    </marker>
+    <marker id="arrowhead-gold" markerWidth="12" markerHeight="8" refX="11" refY="4" orient="auto">
+      <polygon points="0 0, 12 4, 0 8" fill="#d19a2a"/>
+    </marker>
+  </defs>
+
+  <rect class="bg" x="0" y="0" width="1280" height="720"/>
+  <text class="title" x="56" y="64">PAX Coder Commercial Runtime Surface</text>
+  <text class="small" x="58" y="96">Proprietary SNAPKITTYWEST product path: GGUF weights -> verified interfaces -> staged deployment gates</text>
+
+  <rect class="panel" x="56" y="140" width="240" height="144" rx="8"/>
+  <text class="label" x="80" y="178">GGUF Input</text>
+  <text class="small" x="80" y="214">Q4_K_M tensors</text>
+  <text class="tiny" x="80" y="244">router, gate, up, down</text>
+  <text class="tiny" x="80" y="266">commercial weights only</text>
+
+  <rect class="panel2" x="376" y="140" width="248" height="144" rx="8"/>
+  <text class="label" x="400" y="178">PAX GEMM ABI</text>
+  <text class="small" x="400" y="214">shape, dtype, layout</text>
+  <text class="tiny" x="400" y="244">C boundary is the contract</text>
+  <text class="tiny" x="400" y="266">PTX handle is explicit</text>
+
+  <rect class="ok" x="704" y="112" width="244" height="120" rx="8"/>
+  <text class="label" x="728" y="150">CPU Reference</text>
+  <text class="small" x="728" y="184">edge suite PASS</text>
+  <text class="tiny" x="728" y="212">staging-ready path</text>
+
+  <rect class="blocked" x="704" y="264" width="244" height="132" rx="8"/>
+  <text class="label" x="728" y="302">CUDA Device Gate</text>
+  <text class="small" x="728" y="336">requires nvcc + ptxas</text>
+  <text class="tiny" x="728" y="364">compile and device run</text>
+  <text class="tiny" x="728" y="386">before GPU production</text>
+
+  <rect class="gate" x="1028" y="176" width="202" height="160" rx="8"/>
+  <text class="label" x="1052" y="214">MoE Execution</text>
+  <text class="small" x="1052" y="250">router logits</text>
+  <text class="small" x="1052" y="278">SwiGLU gate/up</text>
+  <text class="small" x="1052" y="306">down projection</text>
+
+  <path class="arrow" d="M296 212 L366 212"/>
+  <path class="arrow" d="M624 196 L694 172"/>
+  <path class="dash" d="M624 238 L694 326"/>
+  <path class="arrow" d="M948 172 C982 174 998 198 1018 226"/>
+  <path class="dash" d="M948 326 C984 322 1000 300 1018 280"/>
+
+  <rect class="panel" x="56" y="470" width="366" height="138" rx="8"/>
+  <text class="label" x="82" y="508">Commercial Control</text>
+  <text class="tiny" x="82" y="540">No implied license. No redistribution.</text>
+  <text class="tiny" x="82" y="566">Commercial use requires written authorization.</text>
+  <text class="tiny" x="82" y="592">Weights, PTX, docs, and kernels are covered.</text>
+
+  <rect class="panel" x="456" y="470" width="366" height="138" rx="8"/>
+  <text class="label" x="482" y="508">Evidence Boundary</text>
+  <text class="tiny" x="482" y="540">CPU tests are runtime evidence.</text>
+  <text class="tiny" x="482" y="566">PTX text is handle evidence.</text>
+  <text class="tiny" x="482" y="592">Lean/GPU status requires current tool runs.</text>
+
+  <rect class="panel" x="856" y="470" width="374" height="138" rx="8"/>
+  <text class="label" x="882" y="508">Deployment Rule</text>
+  <text class="tiny" x="882" y="540">CPU path can stage after edge tests pass.</text>
+  <text class="tiny" x="882" y="566">GPU production waits for device harness PASS.</text>
+  <text class="tiny" x="882" y="592">Manifest must match loaded tensor names.</text>
+</svg>
