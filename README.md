@@ -21,23 +21,27 @@ Ampere `sm_86`, with RTX 3080 as the primary engineering target.
 
 ---
 
-## 💰 Pricing & Access
+## 💰 Commercial Access & Node Provisioning
 
-**Contact for access. All tiers require approval.**
+**Source code is public.** You can clone, read, and verify integrity.
 
-- **Community/Contributor:** $0 (approved open-source/research)
-- **Individual:** $250–$500 (one provisioned node)
+**Operational access requires approval.** To provision a Sovereign Node and perform protected operations:
+
+- **Community/Contributor:** $0 (after approval for qualifying use)
+- **Individual:** $250–$500 (per provisioned node)
 - **Commercial Team:** $12,000–$25,000/year (unlimited nodes)
-- **Enterprise:** $50,000–$150,000+/year (custom deployment, audits)
+- **Enterprise:** $50,000–$150,000+/year (custom deployment, formal audits)
 
 📖 [Full Pricing & Plans](PRICING.md)  
-📞 [Request Access](CONTACT.md)
+📞 [Request Node Provisioning](CONTACT.md)
 
 ---
 
-## ✅ Verify This Clone
+## ✅ Source Code Verification
 
-**After cloning, verify your copy is authentic:**
+**The source code is public.** You can clone, read, and verify integrity free of charge.
+
+After cloning, verify your copy is authentic:
 
 ```bash
 ./scripts/verify-clone
@@ -101,28 +105,33 @@ Operations that require proof of authorization from the PAX-Coder authority:
 
 The gate requires a cryptographically signed capability from the external authorization authority.
 
-### Creating a Node Identity (Public, No Authorization)
+### Node Provisioning Flow
 
-A node identity is just a cryptographic public key + metadata. Anyone can create one:
+**Option 1: Generate a Local Node Identity (Public)**
+
+Anyone can create a local node identity, but it is NOT automatically authorized:
 
 ```bash
 cd sovereign
-./generate_node_key.sh      # Creates identity (public)
-./verify_node_key.sh        # Verify identity is valid
+./generate_node_key.sh      # Creates unregistered identity
+./verify_node_key.sh        # Verify identity structure is valid
 ```
 
 This creates:
-- `node.json` — Public identity metadata
-- `node_pk.pem` — Public key
-- `.node_sk` — Private key (local only, never committed)
+- `node.json` — Your public identity metadata
+- `node_pk.pem` — Your public key
+- `.node_sk` — Your private key (local only, never committed)
 
-**Important:** This identity is NOT authorized for protected operations. It is unregistered and unauthorized.
+**Your local node is UNREGISTERED and UNAUTHORIZED.** Protected operations will fail.
 
-To become authorized:
-1. Contact the PAX-Coder authority
-2. Request provisioning with your node identity
-3. Receive a signed authorization capability
-4. Protected operations now work
+**Option 2: Request Provisioning (Required for Protected Operations)**
+
+To perform protected operations (signing releases, production deployment), you must be provisioned:
+
+1. [Contact PAX-Coder](CONTACT.md) and request node provisioning
+2. Select your tier (Community $0, Individual $250–$500, Commercial/Enterprise)
+3. After approval: PAX-Coder provisions a REAL node credential
+4. Use provisioned credential for protected operations
 
 ### Authorized Execution (With Capability Token)
 
