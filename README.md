@@ -29,6 +29,8 @@ Ampere `sm_86`, with RTX 3080 as the primary engineering target.
 
 **Production Authorization:** Contact-controlled. Requires approval and operator-signed provisioning. Not automatic. Not self-service. Not free-for-all.
 
+> **PAX-Coder source is publicly cloneable for inspection and verification. Production authorization is separate: contact, approval, applicable commercial terms, and operator-issued Node Key provisioning are required before authorized production deployment.**
+
 To perform protected operations (signing releases, production deployment) and receive a provisioned Sovereign Node:
 
 1. **Contact:** Submit access request at [CONTACT.md](CONTACT.md)
