@@ -124,7 +124,7 @@ cp huggingface_model_card.md pax-coder-7b-gguf/README.md
 
 | Tier | Price | What You Get |
 |------|-------|-------------|
-| Community | Free | Weights on HF, Ollama image, training data |
+| Community | Free | Weights on HF (`Snapkitty/pax-coder-7b`), Ollama image, training data |
 | Pro | $500/GPU/yr | `pax-verify` REST API, custom fine-tuning, support |
 | Enterprise | $50K/yr | Sovereign runtime, WORM audit chain, SLA |
 
@@ -153,7 +153,7 @@ No CUTLASS or vendor kernel code in training data.
   title  = {PAX-Coder: Verified GPU Kernel Generation via Lean 4 + PTX + Futhark},
   author = {Parr, Ahmad Ali},
   year   = {2026},
-  url    = {https://github.com/pax-verified/pax-coder}
+  url    = {https://github.com/SNAPKITTYWEST/qlora}
 }
 ```
 

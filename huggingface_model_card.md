@@ -15,7 +15,7 @@ tags:
   - mma-sync
   - proof-carrying-code
 datasets:
-  - pax-coder/pax-training-data
+  - Snapkitty/pax-training-data
 pipeline_tag: text-generation
 ---
 
@@ -49,8 +49,8 @@ ollama run pax-coder "Write a verified 3-stage async GEMM for RTX 3080 with Bias
 ```python
 from transformers import AutoModelForCausalLM, AutoTokenizer
 
-model = AutoModelForCausalLM.from_pretrained("pax-coder/pax-coder-7b")
-tokenizer = AutoTokenizer.from_pretrained("pax-coder/pax-coder-7b")
+model = AutoModelForCausalLM.from_pretrained("Snapkitty/pax-coder-7b")
+tokenizer = AutoTokenizer.from_pretrained("Snapkitty/pax-coder-7b")
 
 prompt = """### Instruction:
 Write a Lean 4 formalization of IEEE-754 binary16 RNE with proven |round(x)-x| ≤ 0.5 ulp.
@@ -153,7 +153,7 @@ without the underlying formal verification codebase.
   title  = {PAX-Coder: Verified GPU Kernel Generation via Lean 4 + PTX + Futhark},
   author = {Parr, Ahmad Ali},
   year   = {2026},
-  url    = {https://github.com/pax-verified/pax-coder}
+  url    = {https://github.com/SNAPKITTYWEST/qlora}
 }
 ```
 
