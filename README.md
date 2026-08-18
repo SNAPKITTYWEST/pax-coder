@@ -704,14 +704,14 @@ terms, and registration path for deployment.
 
 ### What Does a Node Key Unlock?
 
-| Feature | Community | Commercial |
+| Feature | Public Repository | Commercial Authorization |
 | --- | --- | --- |
-| Use PAX-Coder locally for kernel verification | Free | Free |
-| Generate kernels for personal projects | Free | Free |
-| Deploy to production on one or more GPUs | Requires node key | Included with commercial key |
-| Embed kernels in products | Requires license | Included with commercial license |
-| Commercial support | Not included | Included by agreement |
-| Proof audit and sign-off | Not included | Included by agreement |
+| Clone and verify integrity | ✓ (anyone) | ✓ (included) |
+| Generate kernels for testing | ✓ (anyone) | ✓ (included) |
+| Deploy to production | ✗ (not authorized) | ✓ (with node key) |
+| Sign releases | ✗ (not authorized) | ✓ (with node key) |
+| Embed in products | ✗ (license required) | ✓ (commercial license) |
+| Support | ✗ (not included) | ✓ (by tier) |
 | SaaS or cloud deployment | Requires license | Included with commercial license |
 
 ### Questions
